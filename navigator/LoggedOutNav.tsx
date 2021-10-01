@@ -6,7 +6,6 @@ import Welcome from "../screens/Welcome";
 
 const Stack = createStackNavigator();
 
-// 헤더 지우기
 function LoggedOutNav() {
   return (
     <Stack.Navigator>
@@ -16,7 +15,16 @@ function LoggedOutNav() {
         component={Welcome}
       />
       <Stack.Screen name="LogIn" component={LogIn} />
-      <Stack.Screen name="CreateAccount" component={CreateAccount} />
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          headerTransparent: true,
+          headerTintColor: "white",
+        }}
+        name="CreateAccount"
+        component={CreateAccount}
+      />
     </Stack.Navigator>
   );
 }
