@@ -5,15 +5,17 @@ import * as Font from "expo-font";
 import { Asset } from "expo-asset";
 import LoggedOutNav from "./navigator/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  Appearance,
-  AppearanceProvider,
-} from "react-native-appearance";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import client, { isLoggedInVar, tokenVar } from "./apollo";
+import LoggedInNav from "./navigator/LoggedInNav";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const onFinish = () => setLoading(false);
-  const preload = async () => {
+
+  const preloadAssets = async () => {
     const fontToLoad = [Ionicons.font];
     const fontPromises = fontToLoad.map((font) => Font.loadAsync(font));
     const imagesToLoad = [
@@ -27,6 +29,15 @@ export default function App() {
     ]);
   };
 
+  const preload = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      isLoggedInVar(true);
+      tokenVar(token);
+    }
+    return preloadAssets();
+  };
+
   if (loading) {
     return (
       <AppLoading
@@ -37,36 +48,11 @@ export default function App() {
     );
   }
 
-  const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-    console.log(colorScheme);
-  });
-
-
   return (
-    <AppearanceProvider>
+    <ApolloProvider client={client}>
       <NavigationContainer>
-        <LoggedOutNav />
+        {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
       </NavigationContainer>
-    </AppearanceProvider>
+    </ApolloProvider>
   );
 }
-
-/* 
-styled-components 차이 
-native vs web
-
-태그 차이
-1. div => View
-2. span => Text
-3. import 차이
-import styled from 'styled-components/native'
-
-appearance
-유저가 라이트, 다크 등의 모드 설정이 있는지체크
-
-userInterfaceStyle : 
-automatic - 시스템의 테마 설정에 따름
-os에 따라 다르게 설정 가능 (dark , light)
-
-  appearance 사용법
-*/
