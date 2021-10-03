@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { FeedProps } from "../propTypes";
+import { PhotoProps } from "../propTypes";
 
-function Feed({ navigation }: FeedProps) {
+function Photo({ navigation }: PhotoProps) {
   return (
     <View
       style={{
@@ -13,11 +13,11 @@ function Feed({ navigation }: FeedProps) {
         justifyContent: "center",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
-        <Text style={{ color: "white" }}>Photo</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <Text style={{ color: "white" }}>Profile</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-export default Feed;
+export default Photo;

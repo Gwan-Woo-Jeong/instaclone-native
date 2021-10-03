@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { FeedProps } from "../propTypes";
+import { SearchProps } from "../propTypes";
 
-function Feed({ navigation }: FeedProps) {
+function Search({navigation} : SearchProps) {
   return (
     <View
       style={{
@@ -20,4 +20,4 @@ function Feed({ navigation }: FeedProps) {
   );
 }
 
-export default Feed;
+export default Search;
