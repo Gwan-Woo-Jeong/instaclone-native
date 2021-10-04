@@ -1,0 +1,111 @@
+import { NavigationProp, useNavigation } from "@react-navigation/core";
+import React, { useEffect, useState } from "react";
+import { Image, useWindowDimensions } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import styled from "styled-components/native";
+import { PhotoComponentProps, RootStackParamList } from "../propTypes";
+import { Ionicons } from "@expo/vector-icons";
+
+const Container = styled.View``;
+const Header = styled.TouchableOpacity`
+  padding: 10px;
+  flex-direction: row;
+  align-items: center;
+`;
+const UserAvatar = styled.Image`
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+`;
+const Username = styled.Text`
+  color: white;
+  font-weight: 600;
+`;
+const File = styled.Image``;
+const Actions = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+const Action = styled.TouchableOpacity`
+  margin-right: 10px;
+`;
+const Caption = styled.View`
+  flex-direction: row;
+`;
+const CaptionText = styled.Text`
+  color: white;
+  margin-left: 5px;
+`;
+const Likes = styled.Text`
+  color: white;
+  margin: 7px 0px;
+  font-weight: 600;
+`;
+const Body = styled.View`
+  padding: 10px;
+`;
+
+function Photo({
+  id,
+  user,
+  caption,
+  file,
+  isLiked,
+  likes,
+}: PhotoComponentProps) {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { width, height } = useWindowDimensions();
+  const [imageHeight, setImageHeight] = useState(height - 450);
+  useEffect(() => {
+    Image.getSize(
+      file,
+      (width, height) => {
+        setImageHeight(height / 3);
+      },
+      () => null
+    );
+  }, [file]);
+  return (
+    <Container>
+      <Header onPress={() => navigation.navigate("Profile")}>
+        <UserAvatar
+          source={{ uri: user.avatar! }}
+          resizeMode="cover"
+          style={{}}
+        />
+        <Username>{user.username}</Username>
+      </Header>
+      <File
+        resizeMode="cover"
+        style={{ width, height: imageHeight }}
+        source={{ uri: file }}
+      />
+      <Body>
+        <Actions>
+          <Action>
+            <Ionicons
+              name={isLiked ? "heart" : "heart-outline"}
+              color={isLiked ? "tomato" : "white"}
+              size={22}
+            />
+          </Action>
+          <Action onPress={() => navigation.navigate("Comments")}>
+            <Ionicons name="chatbubble-outline" color="white" size={22} />
+          </Action>
+        </Actions>
+        <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+          <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
+        </TouchableOpacity>
+        <Caption>
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+            <Username>{user.username}</Username>
+          </TouchableOpacity>
+          <CaptionText>{caption}</CaptionText>
+        </Caption>
+      </Body>
+    </Container>
+  );
+}
+
+export default Photo;

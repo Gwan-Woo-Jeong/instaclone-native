@@ -1,7 +1,10 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { StackNavFactoryProps } from "../propTypes";
+import { Image } from "react-native";
+import { SharedStackNavProps } from "../propTypes";
+import Comments from "../screens/Comments";
 import Feed from "../screens/Feed";
+import Likes from "../screens/Likes";
 import Me from "../screens/Me";
 import Notifications from "../screens/Notifications";
 import Photo from "../screens/Photo";
@@ -12,7 +15,22 @@ const Stack = createStackNavigator();
 
 const getFirstScreen = (screenName: string) => {
   if (screenName === "Feed") {
-    return <Stack.Screen name="Feed" component={Feed} />;
+    return (
+      <Stack.Screen
+        name="Feed"
+        component={Feed}
+        options={{
+          headerMode: "screen",
+          headerTitle: () => (
+            <Image
+              style={{ maxHeight: 40, maxWidth: 120 }}
+              resizeMode="contain"
+              source={require("../assets/logo.png")}
+            />
+          ),
+        }}
+      />
+    );
   } else if (screenName === "Search") {
     return <Stack.Screen name="Search" component={Search} />;
   } else if (screenName === "Notifications") {
@@ -24,8 +42,7 @@ const getFirstScreen = (screenName: string) => {
   }
 };
 
-// 피드, 검색, 알림 (탭의 첫 화면) 빼고 같은 스택 네비게이터 (Photo / Profile)를 리턴
-function StackNavFactory({ screenName }: StackNavFactoryProps) {
+function SharedStackNav({ screenName }: SharedStackNavProps) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -40,8 +57,10 @@ function StackNavFactory({ screenName }: StackNavFactoryProps) {
       {getFirstScreen(screenName)}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Photo" component={Photo} />
+      <Stack.Screen name="Likes" component={Likes} />
+      <Stack.Screen name="Comments" component={Comments} />
     </Stack.Navigator>
   );
 }
 
-export default StackNavFactory;
+export default SharedStackNav;

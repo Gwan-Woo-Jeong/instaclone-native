@@ -1,4 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import React from "react";
+import { seeFeed_seeFeed_user } from "./screens/__generated__/seeFeed";
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -8,6 +10,8 @@ type RootStackParamList = {
   Photo: undefined;
   Profile: undefined;
   Feed: undefined;
+  Likes: undefined;
+  Comments: undefined;
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -20,7 +24,23 @@ export type SearchProps = StackScreenProps<RootStackParamList, "Search">;
 export type PhotoProps = StackScreenProps<RootStackParamList, "Photo">;
 export type ProfileProps = StackScreenProps<RootStackParamList, "Profile">;
 export type FeedProps = StackScreenProps<RootStackParamList, "Feed">;
+export type FeedProps = StackScreenProps<RootStackParamList, "Likes">;
+export type FeedProps = StackScreenProps<RootStackParamList, "Comments">;
 
-export type StackNavFactoryProps = {
+export type SharedStackNavProps = {
   screenName: string;
+};
+
+export type ScreenLayoutProps = {
+  loading: boolean;
+  children: React.ReactNode;
+};
+
+export type PhotoComponentProps = {
+  id: number;
+  user: seeFeed_seeFeed_user;
+  caption: string | null;
+  file: string;
+  isLiked: boolean;
+  likes: number;
 };
