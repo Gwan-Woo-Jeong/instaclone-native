@@ -6,9 +6,10 @@ import { Asset } from "expo-asset";
 import LoggedOutNav from "./navigator/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
 import { ApolloProvider, useReactiveVar } from "@apollo/client";
-import client, { isLoggedInVar, tokenVar } from "./apollo";
+import client, { isLoggedInVar, tokenVar, cache } from "./apollo";
 import LoggedInNav from "./navigator/LoggedInNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorageWrapper, persistCache } from "apollo3-cache-persist";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,13 @@ export default function App() {
       isLoggedInVar(true);
       tokenVar(token);
     }
+    // query 변경으로 인해 schema가 바뀌게 되면 기존에 저장되어 있던 cache랑 충돌하여 에러
+
+    await persistCache({
+      cache,
+      storage: new AsyncStorageWrapper(AsyncStorage),
+      serialize: false,
+    });
     return preloadAssets();
   };
 

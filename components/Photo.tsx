@@ -5,6 +5,21 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import { PhotoComponentProps, RootStackParamList } from "../propTypes";
 import { Ionicons } from "@expo/vector-icons";
+import { gql, useMutation } from "@apollo/client";
+import { MutationUpdaterFn } from "@apollo/client";
+import {
+  toggleLike,
+  toggleLikeVariables,
+} from "../screens/__generated__/toggleLike";
+
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
 
 const Container = styled.View``;
 const Header = styled.TouchableOpacity`
@@ -54,21 +69,54 @@ function Photo({
   isLiked,
   likes,
 }: PhotoComponentProps) {
+  const updateToggleLike: MutationUpdaterFn<toggleLike> = (cache, result) => {
+    const ok = result.data?.toggleLike.ok;
+    if (ok) {
+      const photoId = `Photo:${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked(prev) {
+            return !prev;
+          },
+          likes(prev) {
+            if (isLiked) {
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+
+  const [toggleLikeMutation] = useMutation<toggleLike, toggleLikeVariables>(
+    TOGGLE_LIKE_MUTATION,
+    {
+      variables: { id },
+      update: updateToggleLike,
+    }
+  );
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { width, height } = useWindowDimensions();
   const [imageHeight, setImageHeight] = useState(height - 450);
   useEffect(() => {
-    Image.getSize(
-      file,
-      (width, height) => {
-        setImageHeight(height / 3);
-      },
-      () => null
-    );
+    Image.getSize(file, (width, height) => {
+      setImageHeight(height / 3);
+    });
   }, [file]);
+  // Profile로 가는 코드가 많기 때문에 함수화
+  const goToProfile = () => {
+    navigation.navigate("Profile", {
+      username: user.username,
+      id: user.id,
+    });
+  };
+
   return (
     <Container>
-      <Header onPress={() => navigation.navigate("Profile")}>
+      <Header onPress={goToProfile}>
         <UserAvatar
           source={{ uri: user.avatar! }}
           resizeMode="cover"
@@ -83,7 +131,7 @@ function Photo({
       />
       <Body>
         <Actions>
-          <Action>
+          <Action onPress={() => toggleLikeMutation()}>
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : "white"}
@@ -94,11 +142,13 @@ function Photo({
             <Ionicons name="chatbubble-outline" color="white" size={22} />
           </Action>
         </Actions>
-        <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Likes", { photoId: id })}
+        >
           <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
         </TouchableOpacity>
         <Caption>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={goToProfile}>
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
@@ -107,5 +157,6 @@ function Photo({
     </Container>
   );
 }
+// Likes의 route로 photoId를 보냄
 
 export default Photo;
