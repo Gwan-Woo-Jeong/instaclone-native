@@ -1,12 +1,23 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { View } from "react-native";
+import styled from "styled-components/native";
 import TabIcon from "../components/nav/TabIcon";
+import useMe from "../hooks/useMe";
 import SharedStackNav from "./SharedStackNav";
 
 const Tabs = createBottomTabNavigator();
 
+const ProfileImg = styled.Image`
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  ${(props: { focused: boolean }) =>
+    props.focused && "border-color: white; border-width: 1px;"};
+`;
+
 function LoggedInNav() {
+  const { data } = useMe();
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -61,9 +72,13 @@ function LoggedInNav() {
       <Tabs.Screen
         name="RootMe"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon focused={focused} color={color} iconName="person" />
-          ),
+          // 프로필 사진 바꾸기
+          tabBarIcon: ({ focused, color, size }) =>
+            data?.me?.avatar ? (
+              <ProfileImg source={{ uri: data.me.avatar }} focused={focused} />
+            ) : (
+              <TabIcon focused={focused} color={color} iconName="person" />
+            ),
         }}
       >
         {() => <SharedStackNav screenName="Me" />}

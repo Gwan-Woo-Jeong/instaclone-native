@@ -7,11 +7,12 @@ type RootStackParamList = {
   LogIn: undefined | { username: string; password: string };
   CreateAccount: undefined;
   Search: undefined;
-  Photo: undefined;
+  Photo: undefined | { photoId: number };
   Profile: undefined | { username: string; id: number };
   Feed: undefined;
   Likes: undefined | { photoId: number };
   Comments: undefined;
+  Me: undefined;
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -26,6 +27,7 @@ export type ProfileProps = StackScreenProps<RootStackParamList, "Profile">;
 export type FeedProps = StackScreenProps<RootStackParamList, "Feed">;
 export type LikesProps = StackScreenProps<RootStackParamList, "Likes">;
 export type CommentsProps = StackScreenProps<RootStackParamList, "Comments">;
+export type MeProps = StackScreenProps<RootStackParamList, "Me">;
 
 export type SharedStackNavProps = {
   screenName: string;

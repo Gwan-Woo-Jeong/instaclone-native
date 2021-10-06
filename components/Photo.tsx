@@ -61,6 +61,7 @@ const Body = styled.View`
   padding: 10px;
 `;
 
+// fullView가 있으면 Comment 보여주기
 function Photo({
   id,
   user,
@@ -106,7 +107,6 @@ function Photo({
       setImageHeight(height / 3);
     });
   }, [file]);
-  // Profile로 가는 코드가 많기 때문에 함수화
   const goToProfile = () => {
     navigation.navigate("Profile", {
       username: user.username,
@@ -157,6 +157,5 @@ function Photo({
     </Container>
   );
 }
-// Likes의 route로 photoId를 보냄
 
 export default Photo;

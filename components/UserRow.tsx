@@ -1,7 +1,8 @@
-import { useNavigation } from "@react-navigation/core";
+import { NavigationProp, useNavigation } from "@react-navigation/core";
 import React from "react";
 import styled from "styled-components/native";
 import { colors } from "../colors";
+import { RootStackParamList } from "../propTypes";
 import { seePhotoLikes_seePhotoLikes } from "../screens/__generated__/seePhotoLikes";
 
 const Column = styled.TouchableOpacity`
@@ -47,12 +48,18 @@ function UserRow({
   isFollowing,
   isMe,
   id,
-  
 }: seePhotoLikes_seePhotoLikes) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <Wrapper>
-      <Column onPress={() => navigation.navigate("Profile", {})}>
+      <Column
+        onPress={() => {
+          navigation.navigate("Profile", {
+            username,
+            id,
+          });
+        }}
+      >
         <Avatar source={{ uri: avatar! }} />
         <Username>{username}</Username>
       </Column>

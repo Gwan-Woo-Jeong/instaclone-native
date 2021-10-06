@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Keyboard, KeyboardAvoidingView, Platform } from "react-native";
 import styled from "styled-components/native";
+import DismissKeyboard from "../DismissKeyboard";
 
 const Container = styled.View`
   background-color: black;
@@ -28,15 +24,8 @@ type Props = {
 };
 
 function AuthLayout({ children }: Props) {
-  const dissmissKeyboard = () => {
-    Keyboard.dismiss();
-  };
   return (
-    <TouchableWithoutFeedback
-      style={{ height: "100%" }}
-      onPress={() => dissmissKeyboard()}
-      disabled={Platform.OS === "web"}
-    >
+    <DismissKeyboard>
       <Container>
         <KeyboardAvoidingView
           style={{
@@ -52,7 +41,7 @@ function AuthLayout({ children }: Props) {
           {children}
         </KeyboardAvoidingView>
       </Container>
-    </TouchableWithoutFeedback>
+    </DismissKeyboard>
   );
 }
 

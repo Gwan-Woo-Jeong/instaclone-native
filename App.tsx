@@ -36,13 +36,13 @@ export default function App() {
       isLoggedInVar(true);
       tokenVar(token);
     }
-    // query 변경으로 인해 schema가 바뀌게 되면 기존에 저장되어 있던 cache랑 충돌하여 에러
 
     await persistCache({
       cache,
       storage: new AsyncStorageWrapper(AsyncStorage),
-      serialize: false,
+      serialize: undefined,
     });
+
     return preloadAssets();
   };
 
