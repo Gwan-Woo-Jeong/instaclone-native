@@ -1,90 +1,22 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { View } from "react-native";
-import styled from "styled-components/native";
-import TabIcon from "../components/nav/TabIcon";
-import useMe from "../hooks/useMe";
-import SharedStackNav from "./SharedStackNav";
+import Upload from "../screens/Upload";
+import TabsNav from "./TabsNav";
 
-const Tabs = createBottomTabNavigator();
-
-const ProfileImg = styled.Image`
-  height: 20px;
-  width: 20px;
-  border-radius: 10px;
-  ${(props: { focused: boolean }) =>
-    props.focused && "border-color: white; border-width: 1px;"};
-`;
+const Stack = createStackNavigator();
 
 function LoggedInNav() {
-  const { data } = useMe();
+  // headerShown - 헤더 감추기
   return (
-    <Tabs.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "white",
-        tabBarStyle: {
-          backgroundColor: "black",
-          borderTopColor: "rgba(255, 255, 255, 0.3)",
-        },
-        tabBarShowLabel: false,
-      }}
-    >
-      <Tabs.Screen
-        name="RootFeed"
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon focused={focused} color={color} iconName="home" />
-          ),
-        }}
-      >
-        {() => <SharedStackNav screenName="Feed" />}
-      </Tabs.Screen>
-      <Tabs.Screen
-        name="RootSearch"
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon focused={focused} color={color} iconName="search" />
-          ),
-        }}
-      >
-        {() => <SharedStackNav screenName="Search" />}
-      </Tabs.Screen>
-      <Tabs.Screen
-        name="Camera"
-        component={View}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon focused={focused} color={color} iconName="camera" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="RootNotifications"
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon focused={focused} color={color} iconName="heart" />
-          ),
-        }}
-      >
-        {() => <SharedStackNav screenName="Notifications" />}
-      </Tabs.Screen>
-      <Tabs.Screen
-        name="RootMe"
-        options={{
-          // 프로필 사진 바꾸기
-          tabBarIcon: ({ focused, color, size }) =>
-            data?.me?.avatar ? (
-              <ProfileImg source={{ uri: data.me.avatar }} focused={focused} />
-            ) : (
-              <TabIcon focused={focused} color={color} iconName="person" />
-            ),
-        }}
-      >
-        {() => <SharedStackNav screenName="Me" />}
-      </Tabs.Screen>
-    </Tabs.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }} mode="modal">
+      <Stack.Screen name="Tabs" component={TabsNav} />
+      <Stack.Screen name="Upload" component={Upload} />
+    </Stack.Navigator>
   );
 }
+// (+ Stack )- Camera
+// (+ Stack ) - Tabs - Stack
+// 카메라 아이콘을 선택했을 때 다른 스크린으로 넘어가기 위함
+// 밑에 있는 탭들이 더 이상 안보이게
 
 export default LoggedInNav;
