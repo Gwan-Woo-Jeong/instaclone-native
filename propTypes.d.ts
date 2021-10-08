@@ -13,6 +13,7 @@ type RootStackParamList = {
   Likes: undefined | { photoId: number };
   Comments: undefined;
   Me: undefined;
+  SelectPhoto: undefined;
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -28,6 +29,10 @@ export type FeedProps = StackScreenProps<RootStackParamList, "Feed">;
 export type LikesProps = StackScreenProps<RootStackParamList, "Likes">;
 export type CommentsProps = StackScreenProps<RootStackParamList, "Comments">;
 export type MeProps = StackScreenProps<RootStackParamList, "Me">;
+export type SelectPhotoProps = StackScreenProps<
+  RootStackParamList,
+  "SelectPhoto"
+>;
 
 export type SharedStackNavProps = {
   screenName: string;

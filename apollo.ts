@@ -34,7 +34,7 @@ const AuthLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://tricky-vampirebat-91.loca.lt/graphql",
 });
 
 // cache export

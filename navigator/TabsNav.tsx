@@ -18,10 +18,6 @@ const ProfileImg = styled.Image`
 
 function TabsNav() {
   const { data } = useMe();
-  // 클릭 감지
-  // listeners - tabPress (Fn)
-  // e.preventDefault - 카메라를 아무리 눌러도 아무일도 안일어남 (기본 액션 차단)
-  // listener는 객체 or 함수 형태 (route에 / navigation 접근 가능)
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -61,7 +57,7 @@ function TabsNav() {
           return {
             tabPress: (e) => {
               e.preventDefault();
-              navigation.navigate("Upload");
+              navigation.navigate("UploadNav");
             },
           };
         }}
