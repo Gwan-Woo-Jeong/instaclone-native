@@ -28,6 +28,7 @@ const getFirstScreen = (screenName: string) => {
               source={require("../assets/logo.png")}
             />
           ),
+          headerTitleAlign: "center",
         }}
       />
     );

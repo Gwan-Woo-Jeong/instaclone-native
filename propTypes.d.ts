@@ -14,6 +14,10 @@ type RootStackParamList = {
   Comments: undefined;
   Me: undefined;
   SelectPhoto: undefined;
+  TakePhoto: undefined;
+  Tabs: undefined;
+  UploadForm: undefined | { file: string };
+  nextBtn: undefined | { file: string };
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -32,6 +36,11 @@ export type MeProps = StackScreenProps<RootStackParamList, "Me">;
 export type SelectPhotoProps = StackScreenProps<
   RootStackParamList,
   "SelectPhoto"
+>;
+export type TakePhotoProps = StackScreenProps<RootStackParamList, "TakePhoto">;
+export type UploadFormProps = StackScreenProps<
+  RootStackParamList,
+  "UploadForm"
 >;
 
 export type SharedStackNavProps = {

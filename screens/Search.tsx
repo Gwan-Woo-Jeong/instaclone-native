@@ -76,7 +76,10 @@ function Search({ navigation }: SearchProps) {
   );
 
   useEffect(() => {
-    navigation.setOptions({ headerTitle: SearchBox });
+    navigation.setOptions({
+      headerTitle: SearchBox,
+      headerTitleAlign: "center",
+    });
     register("keyword", { required: true, minLength: 1 });
   }, []);
 

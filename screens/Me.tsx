@@ -6,7 +6,10 @@ import { MeProps } from "../propTypes";
 function Me({ navigation }: MeProps) {
   const { data } = useMe();
   useEffect(() => {
-    navigation.setOptions({ title: data?.me?.username });
+    navigation.setOptions({
+      title: data?.me?.username,
+      headerTitleAlign: "center",
+    });
   }, []);
   return (
     <View

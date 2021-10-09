@@ -5,12 +5,14 @@ import {
   FlatList,
   Image,
   ListRenderItem,
+  Platform,
+  StatusBar,
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../colors";
 import { SelectPhotoProps } from "../propTypes";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import headerRight from "../components/nav/HeaderRight";
 
 const Container = styled.View`
   flex: 1;
@@ -33,34 +35,30 @@ const IconContainer = styled.View`
   right: 0;
 `;
 
-const HeaderRightText = styled.Text`
-  color: ${colors.blue};
-  margin-right: 15px;
-  font-size: 16px;
-  font-weight: 600;
-`;
-
 function SelectPhoto({ navigation }: SelectPhotoProps) {
   const [photos, setPhotos] = useState<Array<MediaLibrary.Asset>>([]);
   const [chosenPhoto, setChosenPhoto] = useState<string>("");
   useEffect(() => {
-    getPermissions();
+    if (Platform.OS === "ios") {
+      getIosPermissions();
+    } else {
+      getAndroidPermissions();
+    }
   }, []);
 
-  const HeaderRight = () => (
-    <TouchableOpacity>
-      <HeaderRightText>Next</HeaderRightText>
-    </TouchableOpacity>
-  );
-
+  // 사진을 선택할 때 마다, next 버튼 리렌더
   useEffect(() => {
-    navigation.setOptions({ headerRight: HeaderRight });
-  }, []);
+    navigation.setOptions({
+      headerRight: headerRight(() =>
+        navigation.navigate("UploadForm", { file: chosenPhoto })
+      ),
+    });
+  }, [chosenPhoto]);
 
   const numColumns = 4;
   const { width } = useWindowDimensions();
 
-  const getPermissions = async () => {
+  const getIosPermissions = async () => {
     const { accessPrivileges, canAskAgain } =
       await MediaLibrary.getPermissionsAsync();
     if (accessPrivileges === "none" && canAskAgain) {
@@ -72,7 +70,21 @@ function SelectPhoto({ navigation }: SelectPhotoProps) {
     } else if (accessPrivileges !== "none") {
       getPhotos();
     } else {
-      getPermissions();
+      getIosPermissions();
+    }
+  };
+
+  const getAndroidPermissions = async () => {
+    const { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
+    if (status === "undetermined" && canAskAgain) {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "undetermined") {
+        getPhotos();
+      }
+    } else if (status !== "undetermined") {
+      getPhotos();
+    } else {
+      getAndroidPermissions();
     }
   };
 
@@ -96,8 +108,10 @@ function SelectPhoto({ navigation }: SelectPhotoProps) {
       </IconContainer>
     </ImageContainer>
   );
+
   return (
     <Container>
+      <StatusBar hidden={false} />
       <Top>
         {chosenPhoto !== "" && (
           <Image

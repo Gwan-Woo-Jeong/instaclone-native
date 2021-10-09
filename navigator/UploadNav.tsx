@@ -35,7 +35,7 @@ function UploadNav() {
               headerTitleStyle: { marginBottom: 8 },
               headerBackImage: ({ tintColor }) => (
                 <Ionicons
-                  style={{ marginLeft: 15, marginBottom: 15 }}
+                  style={{ marginLeft: 5, marginBottom: 5 }}
                   color={tintColor}
                   name="close"
                   size={28}
@@ -46,7 +46,7 @@ function UploadNav() {
             <Stack.Screen
               name="Select"
               component={SelectPhoto}
-              options={{ title: "Choose a photo" }}
+              options={{ title: "Choose a photo", headerTitleAlign: "center" }}
             />
           </Stack.Navigator>
         )}

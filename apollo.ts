@@ -6,6 +6,8 @@ import {
 } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
+import { createUploadLink } from "apollo-upload-client";
 
 const TOKEN = "token";
 
@@ -24,6 +26,10 @@ export const logUserOut = async () => {
   tokenVar("");
 };
 
+// links. authLink -> httpLink 이유
+// http가 서버에 마지막으로 요청하는 link. 후에 다른 어떤 일도 하면 안됨
+// ** onErrorLink : 에러를 확인하고 알림을 줄임
+
 const AuthLink = setContext((_, { headers }) => {
   return {
     headers: {
@@ -33,11 +39,24 @@ const AuthLink = setContext((_, { headers }) => {
   };
 });
 
-const httpLink = createHttpLink({
-  uri: "https://tricky-vampirebat-91.loca.lt/graphql",
+const uploadHttpLink = createUploadLink({
+  uri: "https://thin-bulldog-80.loca.lt/graphql",
 });
 
-// cache export
+const httpLink = createHttpLink({
+  uri: "https://itchy-falcon-97.loca.lt/graphql",
+});
+
+// onError(에러 핸들러 Fn)
+const onErrorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log(`GraphQL Error`, graphQLErrors);
+  }
+  if (networkError) {
+    console.log(`Network Error`, networkError);
+  }
+});
+
 export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -51,8 +70,12 @@ export const cache = new InMemoryCache({
   },
 });
 
+// 헤더 세팅, 에러 콘솔로그, 서버 요청
 const client = new ApolloClient({
-  link: AuthLink.concat(httpLink),
+  // httpLink가 ReactNativeFile을 어떻게 다뤄야할지 모름
+  // => createUploadLink로 업로드 링크를 만듦
+  // 서버에 파일을 업로드할 때, json이 아닌 다른 형태로 보냄
+  link: AuthLink.concat(onErrorLink).concat(uploadHttpLink),
   cache,
 });
 

@@ -5,7 +5,10 @@ import { ProfileProps } from "../propTypes";
 function Profile({ navigation, route }: ProfileProps) {
   useEffect(() => {
     if (route?.params?.username) {
-      navigation.setOptions({ title: route.params.username });
+      navigation.setOptions({
+        title: route.params.username,
+        headerTitleAlign: "center",
+      });
     }
   }, []);
   return (
