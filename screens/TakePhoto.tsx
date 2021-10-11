@@ -143,8 +143,6 @@ function TakePhoto({ navigation }: TakePhotoProps) {
   };
 
   const onDissmiss = () => setTakenPhoto("");
-  // 사진 선택 화면에서 카메라가 켜지는건 리소스 낭비
-  // 유저가 특정 화면을 보고 있는지 알려줌
   const isFocused = useIsFocused();
 
   return (

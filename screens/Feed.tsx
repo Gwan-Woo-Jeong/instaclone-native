@@ -1,6 +1,6 @@
 import { useQuery, gql } from "@apollo/client";
-import React, { useState } from "react";
-import { FlatList, ListRenderItem } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, ListRenderItem, TouchableOpacity } from "react-native";
 import ScreenLayout from "../components/ScreenLayout";
 import { FeedProps } from "../propTypes";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "./fragments";
@@ -10,6 +10,7 @@ import {
   seeFeedVariables,
   seeFeed_seeFeed,
 } from "./__generated__/seeFeed";
+import { Ionicons } from "@expo/vector-icons";
 
 export const FEED_QUERY = gql`
   query seeFeed($offset: Int!) {
@@ -50,6 +51,17 @@ function Feed({ navigation }: FeedProps) {
     setRefreshing(false);
   };
   const [refreshing, setRefreshing] = useState(false);
+  const MessagesBtn = () => (
+    <TouchableOpacity
+      style={{ marginRight: 25 }}
+      onPress={() => navigation.navigate("Messages")}
+    >
+      <Ionicons name="paper-plane" color="white" size={20} />
+    </TouchableOpacity>
+  );
+  useEffect(() => {
+    navigation.setOptions({ headerRight: MessagesBtn });
+  });
   return (
     <ScreenLayout loading={loading}>
       <FlatList

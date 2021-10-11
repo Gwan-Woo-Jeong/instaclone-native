@@ -10,7 +10,6 @@ const HeaderRightText = styled.Text`
   font-weight: 600;
 `;
 
-// 파일 정보와 함께 업로드로 이동
 const headerRight = (onPress: () => void) => () => {
   return (
     <TouchableOpacity onPress={onPress}>

@@ -4,10 +4,10 @@ import UploadNav from "./UploadNav";
 import TabsNav from "./TabsNav";
 import UploadForm from "../screens/UploadForm";
 import { Ionicons } from "@expo/vector-icons";
+import MessagesNav from "./MessagesNav";
 
 const Stack = createStackNavigator();
 
-// 업로드폼만 헤더 보이게 하기
 function LoggedInNav() {
   return (
     <Stack.Navigator
@@ -43,6 +43,11 @@ function LoggedInNav() {
             />
           ),
         }}
+      />
+      <Stack.Screen
+        name="Messages"
+        component={MessagesNav}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

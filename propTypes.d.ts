@@ -18,6 +18,7 @@ type RootStackParamList = {
   Tabs: undefined;
   UploadForm: undefined | { file: string };
   nextBtn: undefined | { file: string };
+  Messages: undefined;
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
