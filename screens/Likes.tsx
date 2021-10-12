@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { FlatList, ListRenderItem, Text, View } from "react-native";
-import styled from "styled-components/native";
+import { FlatList, ListRenderItem } from "react-native";
 import ScreenLayout from "../components/ScreenLayout";
+import { Separator } from "../components/Separator";
 import UserRow from "../components/UserRow";
 import { LikesProps } from "../propTypes";
 import { USER_FRAGMENT } from "./fragments";
@@ -19,12 +19,6 @@ const LIKES_QUERY = gql`
     }
   }
   ${USER_FRAGMENT}
-`;
-
-const Separator = styled.View`
-  width: 100%;
-  height: 1;
-  background-color: rgba(255, 255, 255, 0.2);
 `;
 
 function Likes({ route }: LikesProps) {

@@ -36,7 +36,7 @@ const AuthLink = setContext((_, { headers }) => {
 });
 
 const uploadHttpLink = createUploadLink({
-  uri: "https://thin-bulldog-80.loca.lt/graphql",
+  uri: "http://localhost:4000/graphql",
 });
 
 const httpLink = createHttpLink({
