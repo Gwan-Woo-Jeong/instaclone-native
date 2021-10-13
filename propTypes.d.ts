@@ -1,6 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { seeFeed_seeFeed_user } from "./screens/__generated__/seeFeed";
+import { seeRooms_seeRooms_users } from "./screens/__generated__/seeRooms";
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -19,6 +20,9 @@ type RootStackParamList = {
   UploadForm: undefined | { file: string };
   nextBtn: undefined | { file: string };
   Messages: undefined;
+  Room:
+    | undefined
+    | { id: number; talkingTo: seeRooms_seeRooms_users | null | undefined };
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -43,6 +47,7 @@ export type UploadFormProps = StackScreenProps<
   RootStackParamList,
   "UploadForm"
 >;
+export type RoomProps = StackScreenProps<RootStackParamList, "Room">;
 
 export type SharedStackNavProps = {
   screenName: string;

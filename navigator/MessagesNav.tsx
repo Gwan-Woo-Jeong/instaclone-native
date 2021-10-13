@@ -13,17 +13,22 @@ function MessagesNav() {
         headerStyle: { backgroundColor: "black" },
         headerBackTitleVisible: false,
         headerTintColor: "white",
-        headerBackImage: ({ tintColor }) => (
-          <Ionicons
-            color={tintColor}
-            name="close"
-            size={28}
-            style={{ marginLeft: 5, marginRight: 5 }}
-          />
-        ),
       }}
     >
-      <Stack.Screen name="Rooms" component={Rooms} />
+      <Stack.Screen
+        name="Rooms"
+        options={{
+          headerBackImage: ({ tintColor }) => (
+            <Ionicons
+              color={tintColor}
+              name="chevron-down"
+              size={34}
+              style={{ marginLeft: 5, marginRight: 5 }}
+            />
+          ),
+        }}
+        component={Rooms}
+      />
       <Stack.Screen name="Room" component={Room} />
     </Stack.Navigator>
   );
