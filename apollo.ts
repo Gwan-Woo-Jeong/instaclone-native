@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { createUploadLink } from "apollo-upload-client";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 
 const TOKEN = "token";
 
@@ -39,10 +40,6 @@ const uploadHttpLink = createUploadLink({
   uri: "http://localhost:4000/graphql",
 });
 
-const httpLink = createHttpLink({
-  uri: "https://itchy-falcon-97.loca.lt/graphql",
-});
-
 // onError(에러 핸들러 Fn)
 const onErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -57,10 +54,7 @@ export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        seeFeed: {
-          keyArgs: false,
-          merge: (existing = [], incoming = []) => [...existing, ...incoming],
-        },
+        seeFeed: offsetLimitPagination(),
       },
     },
   },
