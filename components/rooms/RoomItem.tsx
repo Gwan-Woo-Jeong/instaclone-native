@@ -47,16 +47,13 @@ const UnreadText = styled.Text`
   font-weight: 400;
 `;
 
-// room으로 가기
 function RoomItem({ users, unreadTotal, id }: seeRooms_seeRooms) {
   const { data: meData } = useMe();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const talkingTo = users?.find(
-    // find : 조건을 만족하는 첫 번째 유저를 찾음
     (user) => user?.username !== meData?.me?.username
   );
   const goToRoom = () => {
-    // room의 id와 대화 상대 user obj를 전달
     navigation.navigate("Room", { id, talkingTo });
   };
 

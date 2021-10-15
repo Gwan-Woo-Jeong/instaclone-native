@@ -1,5 +1,12 @@
-import { gql, MutationUpdaterFn, useMutation, useQuery } from "@apollo/client";
-import React, { useEffect } from "react";
+import {
+  gql,
+  MutationUpdaterFn,
+  Reference,
+  useApolloClient,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   FlatList,
@@ -18,23 +25,29 @@ import {
 } from "./__generated__/SeeRoom";
 import { sendMessage } from "./__generated__/sendMessage";
 import { Ionicons } from "@expo/vector-icons";
+import { MESSAGE_FRAGMENT } from "./fragments";
+import { UpdateQueryFn } from "@apollo/client/core/watchQueryOptions";
 
-// Error
+// subscription
+const ROOM_UPDATES = gql`
+  subscription roomUpdates($id: Int!) {
+    roomUpdates(id: $id) {
+      ...RoomMessages
+    }
+  }
+  ${MESSAGE_FRAGMENT}
+`;
+
 const ROOM_QUERY = gql`
   query seeRoom($id: Int!) {
     seeRoom(id: $id) {
       id
       messages {
-        id
-        payload
-        user {
-          username
-          avatar
-        }
-        read
+        ...RoomMessages
       }
     }
   }
+  ${MESSAGE_FRAGMENT}
 `;
 
 const SEND_MESSAGE_MUTATION = gql`
@@ -85,17 +98,16 @@ const InputContainer = styled.View`
 `;
 const SendButton = styled.TouchableOpacity``;
 
+// useSubscription으로 data를 가져오면? 새로운 메시지가 올 때마다 캐시 업데이트
+// hook 사용할 필요 X => subscribeToMore
 function Room({ route, navigation }: RoomProps) {
   const { data: meData } = useMe();
   const { register, setValue, handleSubmit, getValues, watch } = useForm();
   const updateSendMessage: MutationUpdaterFn<sendMessage> = (cache, result) => {
     const { ok, id } = result.data?.sendMessage!;
-    console.log(id);
     if (ok && meData) {
       const { message } = getValues();
-      // 메시지 보낸 후 비워주기
       setValue("message", "");
-      // 캐시에 저장된 객체와 똑같이 만듦
       const messageObj = {
         __typename: "Message",
         id,
@@ -106,20 +118,10 @@ function Room({ route, navigation }: RoomProps) {
         },
         read: true,
       };
-      // 메시지를 캐시에 삽입
+
       const messageFragment = cache.writeFragment({
         data: messageObj,
-        fragment: gql`
-          fragment NewMessage on Message {
-            id
-            payload
-            user {
-              username
-              avatar
-            }
-            read
-          }
-        `,
+        fragment: MESSAGE_FRAGMENT,
       });
       cache.modify({
         id: `Room:${route.params?.id}`,
@@ -138,10 +140,62 @@ function Room({ route, navigation }: RoomProps) {
     }
   );
 
-  const { data, loading } = useQuery<SeeRoom, SeeRoomVariables>(ROOM_QUERY, {
-    // route로 전달한 id로 seeRoom
+  // 첫 번째로 useQuery로 room의 메시지를 받아옴
+  // 그 후론 subscribeToMore로 업데이트 - 캐시에 접근 가능
+  const { data, loading, subscribeToMore } = useQuery<
+    SeeRoom,
+    SeeRoomVariables
+  >(ROOM_QUERY, {
     variables: { id: route.params!.id },
   });
+
+  const client = useApolloClient();
+  const updateQuery: UpdateQueryFn = (prevQuery, options) => {
+    const {
+      subscriptionData: {
+        data: { roomUpdates: message },
+      },
+    } = options;
+
+    if (message.id) {
+      const messageFragment = client.cache.writeFragment({
+        data: message,
+        fragment: MESSAGE_FRAGMENT,
+      });
+      client.cache.modify({
+        id: `Room:${route.params?.id}`,
+        fields: {
+          messages(prev) {
+            //** incomingMessage가 prev에 있으면 추가하지 않음
+            // 중복된 메시지 (없으면 undefined)
+            const existingMessage = prev.find(
+              (aMessage: Reference) => aMessage.__ref === messageFragment?.__ref
+            );
+            if (existingMessage) {
+              // 중복이 있으면
+              return prev; // 아무것도 하지 않음
+            }
+            return [...prev, messageFragment];
+          },
+        },
+      });
+    }
+  };
+
+  const [subscribed, setSubscribed] = useState(false);
+
+  useEffect(() => {
+    if (data?.seeRoom && !subscribed) {
+      subscribeToMore({
+        document: ROOM_UPDATES,
+        variables: {
+          id: route?.params?.id,
+        },
+        updateQuery,
+      });
+      setSubscribed(true);
+    }
+  }, [data, subscribed]);
 
   useEffect(() => {
     register("message", { required: true });
@@ -159,14 +213,11 @@ function Room({ route, navigation }: RoomProps) {
   };
 
   useEffect(() => {
-    // route로 전달한 talkingTo로 Header title 수정
     navigation.setOptions({
       title: `${route.params?.talkingTo?.username}`,
     });
   }, []);
 
-  // 누가 보낸 메시지인가 알아야됨
-  // 내가 보낸 메시지 (outGoing = true)
   const renderItem: ListRenderItem<SeeRoom_seeRoom_messages | null> = ({
     item: message,
   }) => (
@@ -179,16 +230,14 @@ function Room({ route, navigation }: RoomProps) {
       <Message>{message?.payload}</Message>
     </MessageContainer>
   );
-  // reverse : old -> new / new -> old
-  // ?? : messages가 배열이 아닐 때, 빈 배열 할당
+
   const messages = [...(data?.seeRoom?.messages ?? [])];
   messages.reverse();
+
   return (
-    // 화면 터치 시 키보드 내리기
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior="padding"
-      // 키보드와 화면 떨이지게 하기
       keyboardVerticalOffset={70}
     >
       <ScreenLayout loading={loading}>
@@ -197,14 +246,13 @@ function Room({ route, navigation }: RoomProps) {
           style={{ width: "100%", marginVertical: 10 }}
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           data={messages}
-          // Error : Attempted to assign to read-only property
-          // immutable하게 해야함
           keyExtractor={(message) => "" + message?.id}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />
         <InputContainer>
           <TextInput
+            blurOnSubmit={false}
             placeholderTextColor="rgba(255, 255, 255, 0.5)"
             placeholder="Write a message..."
             returnKeyLabel="Send Message"
