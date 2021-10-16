@@ -50,6 +50,7 @@ function Feed({ navigation }: FeedProps) {
     await refetch();
     setRefreshing(false);
   };
+  
   const [refreshing, setRefreshing] = useState(false);
   const MessagesBtn = () => (
     <TouchableOpacity

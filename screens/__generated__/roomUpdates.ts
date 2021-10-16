@@ -4,33 +4,27 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: seeRoom
+// GraphQL subscription operation: roomUpdates
 // ====================================================
 
-export interface seeRoom_seeRoom_messages_user {
+export interface roomUpdates_roomUpdates_user {
   __typename: "User";
   username: string;
   avatar: string | null;
 }
 
-export interface seeRoom_seeRoom_messages {
+export interface roomUpdates_roomUpdates {
   __typename: "Message";
   id: number;
   payload: string;
-  user: seeRoom_seeRoom_messages_user;
+  user: roomUpdates_roomUpdates_user;
   read: boolean;
 }
 
-export interface seeRoom_seeRoom {
-  __typename: "Room";
-  id: number;
-  messages: (seeRoom_seeRoom_messages | null)[] | null;
+export interface roomUpdates {
+  roomUpdates: roomUpdates_roomUpdates | null;
 }
 
-export interface seeRoom {
-  seeRoom: seeRoom_seeRoom | null;
-}
-
-export interface seeRoomVariables {
+export interface roomUpdatesVariables {
   id: number;
 }

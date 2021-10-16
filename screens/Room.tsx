@@ -19,9 +19,9 @@ import ScreenLayout from "../components/ScreenLayout";
 import useMe from "../hooks/useMe";
 import { RoomProps } from "../propTypes";
 import {
-  SeeRoom,
-  SeeRoomVariables,
-  SeeRoom_seeRoom_messages,
+  seeRoom,
+  seeRoomVariables,
+  seeRoom_seeRoom_messages,
 } from "./__generated__/SeeRoom";
 import { sendMessage } from "./__generated__/sendMessage";
 import { Ionicons } from "@expo/vector-icons";
@@ -143,8 +143,8 @@ function Room({ route, navigation }: RoomProps) {
   // 첫 번째로 useQuery로 room의 메시지를 받아옴
   // 그 후론 subscribeToMore로 업데이트 - 캐시에 접근 가능
   const { data, loading, subscribeToMore } = useQuery<
-    SeeRoom,
-    SeeRoomVariables
+    seeRoom,
+    seeRoomVariables
   >(ROOM_QUERY, {
     variables: { id: route.params!.id },
   });
@@ -218,7 +218,7 @@ function Room({ route, navigation }: RoomProps) {
     });
   }, []);
 
-  const renderItem: ListRenderItem<SeeRoom_seeRoom_messages | null> = ({
+  const renderItem: ListRenderItem<seeRoom_seeRoom_messages | null> = ({
     item: message,
   }) => (
     <MessageContainer
