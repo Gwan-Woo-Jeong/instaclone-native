@@ -45,7 +45,6 @@ function PhotoScreen({ route, navigation }: PhotoProps) {
         style={{ backgroundColor: "black" }}
         contentContainerStyle={{
           backgroundColor: "black",
-          flex: 1,
           alignItems: "center",
           justifyContent: "center",
         }}

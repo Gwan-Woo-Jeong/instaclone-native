@@ -117,11 +117,7 @@ function Photo({
   return (
     <Container>
       <Header onPress={goToProfile}>
-        <UserAvatar
-          source={{ uri: user.avatar! }}
-          resizeMode="cover"
-          style={{}}
-        />
+        <UserAvatar source={{ uri: user.avatar! }} resizeMode="cover" />
         <Username>{user.username}</Username>
       </Header>
       <File

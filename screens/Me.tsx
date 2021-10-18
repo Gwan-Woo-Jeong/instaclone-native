@@ -4,17 +4,17 @@ import {
   FlatList,
   Image,
   ListRenderItem,
-  Text,
   useWindowDimensions,
-  View,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "styled-components/native";
+import { colors } from "../colors";
 import useMe from "../hooks/useMe";
 import { MeProps } from "../propTypes";
 import { PHOTO_FRAGMENT } from "./fragments";
 import {
   seeProfile,
+  seeProfile_seeProfile,
   seeProfile_seeProfile_photos,
 } from "./__generated__/seeProfile";
 
@@ -58,12 +58,17 @@ const Grid = styled.View`
 const ProfileWrapper = styled.View`
   flex-direction: row;
 `;
-const ProfileContainer = styled.View`
-  justify-content: center;
-`;
+const ProfileContainer = styled.View``;
+
 const FollowContainer = styled.View`
   flex-direction: row;
   margin-bottom: 8px;
+`;
+
+const UsernameContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
 `;
 
 const Avatar = styled.Image`
@@ -74,7 +79,6 @@ const Avatar = styled.Image`
 `;
 const UsernameText = styled.Text`
   color: white;
-  margin-bottom: 15px;
   font-size: 20px;
   font-weight: 800;
 `;
@@ -100,11 +104,26 @@ const BioText = styled.Text`
   font-size: 14px;
 `;
 
-const NoPhoto = styled.View``;
-const NoPhotoText = styled.Text``;
+const NoPhoto = styled.View`
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+const NoPhotoText = styled.Text`
+  color: white;
+  font-weight: 600;
+`;
 
-const EditProfileBtn = styled.TouchableOpacity``;
-const EditProfileText = styled.Text``;
+const EditProfileBtn = styled.TouchableOpacity`
+  background-color: ${colors.blue};
+  padding: 5px 10px;
+  border-radius: 3px;
+  margin-left: 15px;
+`;
+
+const EditProfileText = styled.Text`
+  color: white;
+`;
 
 function Me({ navigation }: MeProps) {
   const { data: meData } = useMe();
@@ -125,6 +144,10 @@ function Me({ navigation }: MeProps) {
   }) => (
     <TouchableOpacity
       style={{ width: width / numColumns, height: 100, padding: 2 }}
+      // Photo 컴포넌트로 네비게이션
+      onPress={() => {
+        navigation.navigate("Photo", { photoId: photo!.id });
+      }}
     >
       <Image
         style={{ width: "100%", height: "100%" }}
@@ -132,13 +155,29 @@ function Me({ navigation }: MeProps) {
       />
     </TouchableOpacity>
   );
+  const getFollowBtn = ({ isFollowing, isMe }: seeProfile_seeProfile) => {
+    if (isMe) {
+      return <EditProfileText>Edit Profile</EditProfileText>;
+    } else {
+      if (isFollowing) {
+        return <EditProfileText>Unfollow</EditProfileText>;
+      } else {
+        return <EditProfileText>Follow</EditProfileText>;
+      }
+    }
+  };
   return (
     <Container>
       <Header>
         <Avatar source={{ uri: data?.seeProfile?.avatar! }} />
         <ProfileWrapper>
           <ProfileContainer>
-            <UsernameText>{data?.seeProfile?.username}</UsernameText>
+            <UsernameContainer>
+              <UsernameText>{data?.seeProfile?.username}</UsernameText>
+              <EditProfileBtn>
+                {data?.seeProfile && getFollowBtn(data?.seeProfile)}
+              </EditProfileBtn>
+            </UsernameContainer>
             <FollowContainer>
               <FollowText>
                 <FollowNumber>{data?.seeProfile?.totalFollowers}</FollowNumber>{" "}
