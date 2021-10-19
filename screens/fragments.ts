@@ -70,3 +70,17 @@ export const MESSAGE_FRAGMENT = gql`
     read
   }
 `;
+
+export const PROFILE_FRAGMENT = gql`
+  fragment ProfileFragment on User {
+    firstName
+    lastName
+    username
+    bio
+    avatar
+    totalFollowing
+    totalFollowers
+    isMe
+    isFollowing
+  }
+`;

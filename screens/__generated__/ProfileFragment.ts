@@ -4,19 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: seeProfile
+// GraphQL fragment: ProfileFragment
 // ====================================================
 
-export interface seeProfile_seeProfile_photos {
-  __typename: "Photo";
-  id: number;
-  file: string;
-  likes: number;
-  commentNumber: number;
-  isLiked: boolean;
-}
-
-export interface seeProfile_seeProfile {
+export interface ProfileFragment {
   __typename: "User";
   firstName: string;
   lastName: string | null;
@@ -27,13 +18,4 @@ export interface seeProfile_seeProfile {
   totalFollowers: number;
   isMe: boolean;
   isFollowing: boolean;
-  photos: (seeProfile_seeProfile_photos | null)[] | null;
-}
-
-export interface seeProfile {
-  seeProfile: seeProfile_seeProfile | null;
-}
-
-export interface seeProfileVariables {
-  username: string;
 }
