@@ -66,6 +66,9 @@ const onErrorLink = onError(({ graphQLErrors, networkError }) => {
 
 export const cache = new InMemoryCache({
   typePolicies: {
+    User: {
+      keyFields: (obj) => `User:${obj.username}`,
+    },
     Query: {
       fields: {
         seeFeed: offsetLimitPagination(),

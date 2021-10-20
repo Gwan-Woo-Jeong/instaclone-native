@@ -181,6 +181,8 @@ function ProfileScreen({ seeProfile }: seeProfile) {
       return;
     }
 
+    console.log(cache);
+
     cache.modify({
       id: `User:${seeProfile?.username}`,
       fields: {
