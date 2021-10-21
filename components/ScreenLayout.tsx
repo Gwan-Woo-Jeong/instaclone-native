@@ -1,19 +1,20 @@
 import React from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator } from "react-native";
+import styled from "styled-components/native";
 import { ScreenLayoutProps } from "../propTypes";
 
-function ScreenLayout({ loading, children }: ScreenLayoutProps) {
+const Container = styled.View<{ base?: boolean }>`
+  background-color: black;
+  flex: 1;
+  align-items: ${(props) => (props.base ? "center" : "baseline")};
+  justify-content: center;
+`;
+
+function ScreenLayout({ loading, children, base }: ScreenLayoutProps) {
   return (
-    <View
-      style={{
-        backgroundColor: "black",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <Container base={base}>
       {loading ? <ActivityIndicator color="white" /> : children}
-    </View>
+    </Container>
   );
 }
 

@@ -8,12 +8,7 @@ import {
 } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  ListRenderItem,
-  View,
-} from "react-native";
+import { FlatList, ListRenderItem, View } from "react-native";
 import styled from "styled-components/native";
 import ScreenLayout from "../components/ScreenLayout";
 import useMe from "../hooks/useMe";
@@ -24,9 +19,11 @@ import {
   seeRoom_seeRoom_messages,
 } from "./__generated__/SeeRoom";
 import { sendMessage } from "./__generated__/sendMessage";
-import { Ionicons } from "@expo/vector-icons";
 import { MESSAGE_FRAGMENT } from "./fragments";
 import { UpdateQueryFn } from "@apollo/client/core/watchQueryOptions";
+import TextInputForm from "../components/TextInputForm";
+import DismissKeyboard from "../components/DismissKeyboard";
+import AvoidKeyboard from "../components/AvoidKeyboard";
 
 // subscription
 const ROOM_UPDATES = gql`
@@ -81,22 +78,6 @@ const Message = styled.Text`
   overflow: hidden;
   margin: 0px 10px;
 `;
-const TextInput = styled.TextInput`
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 10px 20px;
-  border-radius: 1000px;
-  color: white;
-  width: 90%;
-  margin-right: 10px;
-`;
-const InputContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin: 25px 0px;
-  margin-bottom: 50px;
-  width: 95%;
-`;
-const SendButton = styled.TouchableOpacity``;
 
 // useSubscription으로 data를 가져오면? 새로운 메시지가 올 때마다 캐시 업데이트
 // hook 사용할 필요 X => subscribeToMore
@@ -235,49 +216,28 @@ function Room({ route, navigation }: RoomProps) {
   messages.reverse();
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="padding"
-      keyboardVerticalOffset={70}
-    >
-      <ScreenLayout loading={loading}>
-        <FlatList
-          inverted
-          style={{ width: "100%", marginVertical: 10 }}
-          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          data={messages}
-          keyExtractor={(message) => "" + message?.id}
-          showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-        />
-        <InputContainer>
-          <TextInput
-            blurOnSubmit={false}
-            placeholderTextColor="rgba(255, 255, 255, 0.5)"
-            placeholder="Write a message..."
-            returnKeyLabel="Send Message"
-            returnKeyType="send"
+    <DismissKeyboard>
+      <AvoidKeyboard>
+        <ScreenLayout loading={loading}>
+          <FlatList
+            inverted
+            style={{ width: "100%", marginVertical: 10 }}
+            ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+            data={messages}
+            keyExtractor={(message) => "" + message?.id}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderItem}
+          />
+          <TextInputForm
             onChangeText={(text) => setValue("message", text)}
             onSubmitEditing={handleSubmit(onValid)}
-            value={watch("message")}
-          />
-          <SendButton
-            disabled={!Boolean(watch("message"))}
             onPress={handleSubmit(onValid)}
-          >
-            <Ionicons
-              name="send"
-              color={
-                !Boolean(watch("message"))
-                  ? "rgba(255, 255, 255, 0.5)"
-                  : "white"
-              }
-              size={22}
-            />
-          </SendButton>
-        </InputContainer>
-      </ScreenLayout>
-    </KeyboardAvoidingView>
+            value={watch("message")}
+            placeholder="Write a message..."
+          />
+        </ScreenLayout>
+      </AvoidKeyboard>
+    </DismissKeyboard>
   );
 }
 

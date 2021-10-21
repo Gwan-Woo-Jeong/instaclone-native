@@ -12,7 +12,7 @@ type RootStackParamList = {
   Profile: undefined | { username: string; id: number };
   Feed: undefined;
   Likes: undefined | { photoId: number };
-  Comments: undefined;
+  Comments: undefined | { photoId: number };
   Me: undefined;
   SelectPhoto: undefined;
   TakePhoto: undefined;
@@ -48,6 +48,7 @@ export type UploadFormProps = StackScreenProps<
   "UploadForm"
 >;
 export type RoomProps = StackScreenProps<RootStackParamList, "Room">;
+export type CommentsProps = StackScreenProps<RootStackParamList, "Comments">;
 
 export type SharedStackNavProps = {
   screenName: string;
@@ -56,6 +57,7 @@ export type SharedStackNavProps = {
 export type ScreenLayoutProps = {
   loading: boolean;
   children: React.ReactNode;
+  base?: boolean;
 };
 
 export type PhotoComponentProps = {
@@ -65,4 +67,10 @@ export type PhotoComponentProps = {
   file: string;
   isLiked: boolean;
   likes: number;
+};
+
+export type CommentProps = {
+  avatar: string;
+  username: string;
+  payload: string;
 };

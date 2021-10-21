@@ -134,7 +134,9 @@ function Photo({
               size={22}
             />
           </Action>
-          <Action onPress={() => navigation.navigate("Comments")}>
+          <Action
+            onPress={() => navigation.navigate("Comments", { photoId: id })}
+          >
             <Ionicons name="chatbubble-outline" color="white" size={22} />
           </Action>
         </Actions>

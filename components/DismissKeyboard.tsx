@@ -8,7 +8,7 @@ function DismissKeyboard({ children }: { children: React.ReactNode }) {
   };
   return (
     <TouchableWithoutFeedback
-      style={{ height: "100%" }}
+      style={{ height: "100%", backgroundColor: "black" }}
       onPress={() => dissmissKeyboard()}
       disabled={Platform.OS === "web"}
     >

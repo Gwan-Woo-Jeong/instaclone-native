@@ -19,28 +19,8 @@ const SEE_ROOMS_QUERY = gql`
 
 function Rooms() {
   const { data, loading } = useQuery<seeRooms>(SEE_ROOMS_QUERY);
-  // const { data: meData } = useMe();
   const renderItem: ListRenderItem<seeRooms_seeRooms> = ({ item: room }) => {
     return <RoomItem {...room} />;
-    // const notMe = room.users?.find(
-    //   // find : 조건을 만족하는 첫 번째 유저를 찾음
-    //   (user) => user?.username !== meData?.me?.username
-    // );
-    // return (
-    //   <RoomContainer>
-    //     <Column>
-    //       <Avatar source={{ uri: notMe?.avatar! }} />
-    //       <Data>
-    //         <Username>{notMe?.username}</Username>
-    //         <UnreadText>
-    //           {room.unreadTotal} unread{" "}
-    //           {room.unreadTotal === 1 ? "message" : "messages"}
-    //         </UnreadText>
-    //       </Data>
-    //     </Column>
-    //     <Column>{room.unreadTotal !== 0 && <UnreadDot />}</Column>
-    //   </RoomContainer>
-    // );
   };
 
   return (
