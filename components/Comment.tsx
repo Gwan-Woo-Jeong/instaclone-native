@@ -1,6 +1,18 @@
 import React from "react";
 import styled from "styled-components/native";
+import { Ionicons } from "@expo/vector-icons";
+import { gql, MutationUpdaterFn, useMutation } from "@apollo/client";
+import { deleteComment } from "../screens/__generated__/deleteComment";
 import { CommentProps } from "../propTypes";
+import moment from "moment";
+
+const DELETE_COMMENT_MUTATION = gql`
+  mutation deleteComment($id: Int!) {
+    deleteComment(id: $id) {
+      ok
+    }
+  }
+`;
 
 const CommentContainer = styled.View`
   flex-direction: row;
@@ -23,15 +35,59 @@ const CommentText = styled.Text`
   color: white;
   margin-left: 5px;
 `;
+const DeleteButton = styled.TouchableOpacity`
+  margin-left: 5px;
+`;
+const Date = styled.Text`
+  color: #a9a9a9;
+  font-size: 9px;
+  margin-left: 5px;
+`;
+function Comment({ photoId, comment }: CommentProps) {
+  const updateDeleteComment: MutationUpdaterFn<deleteComment> = (
+    cache,
+    result
+  ) => {
+    const { ok } = result!.data!.deleteComment;
+    if (ok) {
+      cache.evict({ id: `Comment:${comment.id}` });
+      cache.modify({
+        id: `Photo:${photoId}`,
+        fields: {
+          commentNumber(prev) {
+            return prev - 1;
+          },
+        },
+      });
+    }
+  };
 
-function Comment({ avatar, username, payload }: CommentProps) {
+  const [deleteCommentMutation] = useMutation(DELETE_COMMENT_MUTATION, {
+    variables: {
+      id: comment.id,
+    },
+    update: updateDeleteComment,
+  });
+
+  const onDeletePress = () => {
+    deleteCommentMutation();
+  };
+
+  console.log();
+
   return (
     <CommentContainer>
-      <Avatar source={{ uri: avatar }} />
+      <Avatar source={{ uri: comment.user.avatar! }} />
       <TextContainer>
-        <UsernameText>{username}</UsernameText>
-        <CommentText>{payload}</CommentText>
+        <UsernameText>{comment.user.username}</UsernameText>
+        <CommentText>{comment.payload}</CommentText>
+        <Date>{moment(Number(comment.createdAt)).fromNow()}</Date>
       </TextContainer>
+      {comment.isMine && (
+        <DeleteButton onPress={onDeletePress}>
+          <Ionicons name="close" color="#6c6c6c" size={15} />
+        </DeleteButton>
+      )}
     </CommentContainer>
   );
 }

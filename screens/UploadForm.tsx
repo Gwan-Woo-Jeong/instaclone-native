@@ -49,7 +49,7 @@ function UploadForm({ route, navigation }: UploadFormProps) {
       cache.modify({
         id: "ROOT_QUERY",
         fields: {
-          seeFeed(prev) {
+          seeFeedNative(prev) {
             return [uploadPhoto, ...prev];
           },
         },

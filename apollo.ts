@@ -71,7 +71,7 @@ export const cache = new InMemoryCache({
     },
     Query: {
       fields: {
-        seeFeed: offsetLimitPagination(),
+        seeFeedNative: offsetLimitPagination(),
       },
     },
   },

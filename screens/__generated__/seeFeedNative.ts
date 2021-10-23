@@ -4,49 +4,49 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: seeFeed
+// GraphQL query operation: seeFeedNative
 // ====================================================
 
-export interface seeFeed_seeFeed_user {
+export interface seeFeedNative_seeFeedNative_user {
   __typename: "User";
   id: number;
   username: string;
   avatar: string | null;
 }
 
-export interface seeFeed_seeFeed_comments_user {
+export interface seeFeedNative_seeFeedNative_comments_user {
   __typename: "User";
   username: string;
   avatar: string | null;
 }
 
-export interface seeFeed_seeFeed_comments {
+export interface seeFeedNative_seeFeedNative_comments {
   __typename: "Comment";
   id: number;
-  user: seeFeed_seeFeed_comments_user;
+  user: seeFeedNative_seeFeedNative_comments_user;
   payload: string;
   isMine: boolean;
   createdAt: string;
 }
 
-export interface seeFeed_seeFeed {
+export interface seeFeedNative_seeFeedNative {
   __typename: "Photo";
   id: number;
   file: string;
   likes: number;
   commentNumber: number;
   isLiked: boolean;
-  user: seeFeed_seeFeed_user;
+  user: seeFeedNative_seeFeedNative_user;
   caption: string | null;
-  comments: (seeFeed_seeFeed_comments | null)[] | null;
+  comments: (seeFeedNative_seeFeedNative_comments | null)[] | null;
   createdAt: string;
   isMine: boolean;
 }
 
-export interface seeFeed {
-  seeFeed: (seeFeed_seeFeed | null)[] | null;
+export interface seeFeedNative {
+  seeFeedNative: (seeFeedNative_seeFeedNative | null)[] | null;
 }
 
-export interface seeFeedVariables {
+export interface seeFeedNativeVariables {
   offset: number;
 }

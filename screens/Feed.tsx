@@ -6,15 +6,15 @@ import { FeedProps } from "../propTypes";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "./fragments";
 import Photo from "../components/Photo";
 import {
-  seeFeed,
-  seeFeedVariables,
-  seeFeed_seeFeed,
-} from "./__generated__/seeFeed";
+  seeFeedNative,
+  seeFeedNativeVariables,
+  seeFeedNative_seeFeedNative,
+} from "./__generated__/seeFeedNative";
 import { Ionicons } from "@expo/vector-icons";
 
 export const FEED_QUERY = gql`
-  query seeFeed($offset: Int!) {
-    seeFeed(offset: $offset) {
+  query seeFeedNative($offset: Int!) {
+    seeFeedNative(offset: $offset) {
       ...PhotoFragment
       user {
         id
@@ -36,13 +36,13 @@ export const FEED_QUERY = gql`
 
 function Feed({ navigation }: FeedProps) {
   const { data, loading, refetch, fetchMore } = useQuery<
-    seeFeed,
-    seeFeedVariables
+    seeFeedNative,
+    seeFeedNativeVariables
   >(FEED_QUERY, {
     variables: { offset: 0 },
   });
 
-  const renderPhoto: ListRenderItem<seeFeed_seeFeed | null> = ({
+  const renderPhoto: ListRenderItem<seeFeedNative_seeFeedNative | null> = ({
     item: photo,
   }) => <Photo {...photo!} />;
   const refresh = async () => {
@@ -50,7 +50,7 @@ function Feed({ navigation }: FeedProps) {
     await refetch();
     setRefreshing(false);
   };
-  
+
   const [refreshing, setRefreshing] = useState(false);
   const MessagesBtn = () => (
     <TouchableOpacity
@@ -69,7 +69,7 @@ function Feed({ navigation }: FeedProps) {
         onEndReached={() =>
           fetchMore({
             variables: {
-              offset: data?.seeFeed?.length,
+              offset: data?.seeFeedNative?.length,
             },
           })
         }
@@ -78,7 +78,7 @@ function Feed({ navigation }: FeedProps) {
         onRefresh={refresh}
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
-        data={data?.seeFeed}
+        data={data?.seeFeedNative}
         keyExtractor={(photo) => "" + photo?.id}
         renderItem={renderPhoto}
       />

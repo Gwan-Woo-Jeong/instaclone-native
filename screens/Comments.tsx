@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, MutationUpdaterFn, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FlatList, ListRenderItem } from "react-native";
@@ -7,8 +7,10 @@ import Comment from "../components/Comment";
 import DismissKeyboard from "../components/DismissKeyboard";
 import ScreenLayout from "../components/ScreenLayout";
 import TextInputForm from "../components/TextInputForm";
+import useMe from "../hooks/useMe";
 import { CommentsProps } from "../propTypes";
 import { COMMENT_FRAGMENT } from "./fragments";
+import { createComment } from "./__generated__/createComment";
 import {
   seePhotoComments,
   seePhotoComments_seePhotoComments,
@@ -64,11 +66,7 @@ function Comments({ route }: CommentsProps) {
 
   const renderComment: ListRenderItem<seePhotoComments_seePhotoComments | null> =
     ({ item: comment }) => (
-      <Comment
-        avatar={comment?.user.avatar!}
-        username={comment?.user.username!}
-        payload={comment?.payload!}
-      />
+      <Comment comment={comment!} photoId={route.params?.photoId!} />
     );
 
   const { register, setValue, handleSubmit, getValues, watch } = useForm();
@@ -76,10 +74,6 @@ function Comments({ route }: CommentsProps) {
   useEffect(() => {
     register("comment", { required: true });
   }, []);
-
-  const [createCommentMutation, { loading: creatingComment }] = useMutation(
-    CREATE_COMMENT_MUTATION
-  );
 
   const onValid: SubmitHandler<{ comment: string }> = ({ comment }) => {
     if (!creatingComment) {
@@ -89,6 +83,68 @@ function Comments({ route }: CommentsProps) {
     }
   };
 
+  const { data: userData } = useMe();
+  const createCommentUpdate: MutationUpdaterFn<createComment> = (
+    cache,
+    result
+  ) => {
+    const { comment } = getValues();
+    setValue("comment", "");
+    const { ok, id } = result.data!.createComment;
+    if (ok && userData) {
+      const newComment = {
+        __typename: "Comment",
+        createdAt: Date.now() + "",
+        id,
+        isMine: true,
+        payload: comment,
+        user: { ...userData.me },
+      };
+
+      const newCacheComment = cache.writeFragment({
+        data: newComment,
+        fragment: gql`
+          fragment AnyName on Comment {
+            id
+            createdAt
+            isMine
+            payload
+            user {
+              username
+              avatar
+            }
+          }
+        `,
+      });
+
+      cache.modify({
+        id: `Photo:${route.params?.photoId}`,
+        fields: {
+          comments(prev) {
+            return [...prev, newCacheComment];
+          },
+          commentNumber(prev) {
+            return prev + 1;
+          },
+        },
+      });
+
+      cache.modify({
+        id: "ROOT_QUERY",
+        fields: {
+          seePhotoComments(prev) {
+            return [...prev, newCacheComment];
+          },
+        },
+      });
+    }
+  };
+
+  const [createCommentMutation, { loading: creatingComment }] = useMutation(
+    CREATE_COMMENT_MUTATION,
+    { update: createCommentUpdate }
+  );
+
   return (
     <DismissKeyboard>
       <AvoidKeyboard>
@@ -97,6 +153,7 @@ function Comments({ route }: CommentsProps) {
             data={data?.seePhotoComments}
             keyExtractor={(comment) => "" + comment?.id}
             renderItem={renderComment}
+            showsVerticalScrollIndicator={false}
           />
           <TextInputForm
             placeholder="Write a comment..."

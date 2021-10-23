@@ -2,6 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { seeFeed_seeFeed_user } from "./screens/__generated__/seeFeed";
 import { seeRooms_seeRooms_users } from "./screens/__generated__/seeRooms";
+import { seePhotoComments_seePhotoComments } from "./screens/__generated__/seePhotoComments";
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -70,7 +71,6 @@ export type PhotoComponentProps = {
 };
 
 export type CommentProps = {
-  avatar: string;
-  username: string;
-  payload: string;
+  comment: seePhotoComments_seePhotoComments;
+  photoId: number;
 };
