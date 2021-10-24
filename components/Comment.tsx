@@ -39,10 +39,12 @@ const DeleteButton = styled.TouchableOpacity`
   margin-left: 5px;
 `;
 const Date = styled.Text`
-  color: #a9a9a9;
+  color: #cecdcd;
   font-size: 9px;
   margin-left: 5px;
+  line-height: 25px;
 `;
+
 function Comment({ photoId, comment }: CommentProps) {
   const updateDeleteComment: MutationUpdaterFn<deleteComment> = (
     cache,
@@ -73,8 +75,6 @@ function Comment({ photoId, comment }: CommentProps) {
     deleteCommentMutation();
   };
 
-  console.log();
-
   return (
     <CommentContainer>
       <Avatar source={{ uri: comment.user.avatar! }} />
@@ -82,12 +82,12 @@ function Comment({ photoId, comment }: CommentProps) {
         <UsernameText>{comment.user.username}</UsernameText>
         <CommentText>{comment.payload}</CommentText>
         <Date>{moment(Number(comment.createdAt)).fromNow()}</Date>
+        {comment.isMine && (
+          <DeleteButton onPress={onDeletePress}>
+            <Ionicons name="close" color="#505050" size={15} />
+          </DeleteButton>
+        )}
       </TextContainer>
-      {comment.isMine && (
-        <DeleteButton onPress={onDeletePress}>
-          <Ionicons name="close" color="#6c6c6c" size={15} />
-        </DeleteButton>
-      )}
     </CommentContainer>
   );
 }

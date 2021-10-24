@@ -44,7 +44,7 @@ function Feed({ navigation }: FeedProps) {
 
   const renderPhoto: ListRenderItem<seeFeedNative_seeFeedNative | null> = ({
     item: photo,
-  }) => <Photo {...photo!} />;
+  }) => <Photo photo={photo!} />;
   const refresh = async () => {
     setRefreshing(true);
     await refetch();

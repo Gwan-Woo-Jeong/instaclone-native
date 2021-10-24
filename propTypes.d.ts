@@ -3,6 +3,7 @@ import React from "react";
 import { seeFeed_seeFeed_user } from "./screens/__generated__/seeFeed";
 import { seeRooms_seeRooms_users } from "./screens/__generated__/seeRooms";
 import { seePhotoComments_seePhotoComments } from "./screens/__generated__/seePhotoComments";
+import { seeFeedNative_seeFeedNative } from "./screens/__generated__/seeFeedNative";
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -33,7 +34,7 @@ export type CreateAccountProps = StackScreenProps<
   "CreateAccount"
 >;
 export type SearchProps = StackScreenProps<RootStackParamList, "Search">;
-export type PhotoProps = StackScreenProps<RootStackParamList, "Photo">;
+export type PhotoScreenProps = StackScreenProps<RootStackParamList, "Photo">;
 export type ProfileProps = StackScreenProps<RootStackParamList, "Profile">;
 export type FeedProps = StackScreenProps<RootStackParamList, "Feed">;
 export type LikesProps = StackScreenProps<RootStackParamList, "Likes">;
@@ -61,16 +62,12 @@ export type ScreenLayoutProps = {
   base?: boolean;
 };
 
-export type PhotoComponentProps = {
-  id: number;
-  user: seeFeed_seeFeed_user;
-  caption: string | null;
-  file: string;
-  isLiked: boolean;
-  likes: number;
-};
-
 export type CommentProps = {
   comment: seePhotoComments_seePhotoComments;
   photoId: number;
+};
+
+export type PhotoProps = {
+  photo: seeFeedNative_seeFeedNative;
+  fullView?: boolean;
 };

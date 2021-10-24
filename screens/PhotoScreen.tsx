@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
-import { PhotoProps } from "../propTypes";
+import { PhotoScreenProps } from "../propTypes";
 import { PHOTO_FRAGMENT } from "./fragments";
 import Photo from "../components/Photo";
 import ScreenLayout from "../components/ScreenLayout";
@@ -16,13 +16,14 @@ const SEE_PHOTO = gql`
         avatar
       }
       caption
+      createdAt
     }
   }
   ${PHOTO_FRAGMENT}
 `;
 
 // fullView가 있으면 Comment 보여주기
-function PhotoScreen({ route, navigation }: PhotoProps) {
+function PhotoScreen({ route, navigation }: PhotoScreenProps) {
   const [refreshing, setRefreshing] = useState(false);
   const { data, loading, refetch } = useQuery(SEE_PHOTO, {
     variables: { id: route.params?.photoId },
@@ -49,7 +50,7 @@ function PhotoScreen({ route, navigation }: PhotoProps) {
           justifyContent: "center",
         }}
       >
-        <Photo {...data?.seePhoto} />
+        <Photo photo={data?.seePhoto} fullView={true} />
       </ScrollView>
     </ScreenLayout>
   );

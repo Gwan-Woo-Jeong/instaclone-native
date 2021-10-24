@@ -7,7 +7,7 @@ import Feed from "../screens/Feed";
 import Likes from "../screens/Likes";
 import Me from "../screens/Me";
 import Notifications from "../screens/Notifications";
-import Photo from "../screens/Photo";
+import PhotoScreen from "../screens/PhotoScreen";
 import Profile from "../screens/Profile";
 import Search from "../screens/Search";
 
@@ -57,7 +57,7 @@ function SharedStackNav({ screenName }: SharedStackNavProps) {
     >
       {getFirstScreen(screenName)}
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Photo" component={Photo} />
+      <Stack.Screen name="Photo" component={PhotoScreen} />
       <Stack.Screen name="Likes" component={Likes} />
       <Stack.Screen name="Comments" component={Comments} />
     </Stack.Navigator>

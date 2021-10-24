@@ -52,6 +52,7 @@ function TextInputForm({
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
         value={value}
+        autoCorrect={false}
       />
       <TouchableOpacity disabled={!Boolean(value)} onPress={onPress}>
         <Ionicons

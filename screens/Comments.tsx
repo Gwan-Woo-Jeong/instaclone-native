@@ -154,6 +154,7 @@ function Comments({ route }: CommentsProps) {
             keyExtractor={(comment) => "" + comment?.id}
             renderItem={renderComment}
             showsVerticalScrollIndicator={false}
+            horizontal={false}
           />
           <TextInputForm
             placeholder="Write a comment..."
