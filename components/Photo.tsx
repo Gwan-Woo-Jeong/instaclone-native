@@ -12,6 +12,7 @@ import {
   toggleLikeVariables,
 } from "../screens/__generated__/toggleLike";
 import moment from "moment";
+import { seeFeedNative_seeFeedNative } from "../screens/__generated__/seeFeedNative";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -70,12 +71,19 @@ const Date = styled.Text`
   font-size: 13px;
 `;
 
-// fullView가 있으면 Comment 보여주기
-function Photo({ photo, fullView }: PhotoProps) {
+function Photo({
+  id,
+  isLiked,
+  file,
+  user,
+  likes,
+  createdAt,
+  caption,
+}: seeFeedNative_seeFeedNative) {
   const updateToggleLike: MutationUpdaterFn<toggleLike> = (cache, result) => {
     const ok = result.data?.toggleLike.ok;
     if (ok) {
-      const photoId = `Photo:${photo.id}`;
+      const photoId = `Photo:${id}`;
       cache.modify({
         id: photoId,
         fields: {
@@ -83,7 +91,7 @@ function Photo({ photo, fullView }: PhotoProps) {
             return !prev;
           },
           likes(prev) {
-            if (photo.isLiked) {
+            if (isLiked) {
               return prev - 1;
             }
             return prev + 1;
@@ -96,7 +104,7 @@ function Photo({ photo, fullView }: PhotoProps) {
   const [toggleLikeMutation] = useMutation<toggleLike, toggleLikeVariables>(
     TOGGLE_LIKE_MUTATION,
     {
-      variables: { id: photo.id },
+      variables: { id: id },
       update: updateToggleLike,
     }
   );
@@ -105,60 +113,56 @@ function Photo({ photo, fullView }: PhotoProps) {
   const { width, height } = useWindowDimensions();
   const [imageHeight, setImageHeight] = useState(height - 450);
   useEffect(() => {
-    Image.getSize(photo.file, (width, height) => {
+    Image.getSize(file, (width, height) => {
       setImageHeight(height / 3);
     });
-  }, [photo.file]);
+  }, [file]);
   const goToProfile = () => {
     navigation.navigate("Profile", {
-      username: photo.user.username,
-      id: photo.user.id,
+      username: user?.username,
+      id: user?.id,
     });
   };
 
   return (
     <Container>
       <Header onPress={goToProfile}>
-        <UserAvatar source={{ uri: photo.user.avatar! }} resizeMode="cover" />
-        <Username>{photo.user.username}</Username>
+        <UserAvatar source={{ uri: user?.avatar! }} resizeMode="cover" />
+        <Username>{user?.username}</Username>
       </Header>
       <File
         resizeMode="cover"
         style={{ width, height: imageHeight }}
-        source={{ uri: photo.file }}
+        source={{ uri: file }}
       />
       <Body>
         <ActionsContainer>
           <Actions>
             <Action onPress={() => toggleLikeMutation()}>
               <Ionicons
-                name={photo.isLiked ? "heart" : "heart-outline"}
-                color={photo.isLiked ? "tomato" : "white"}
+                name={isLiked ? "heart" : "heart-outline"}
+                color={isLiked ? "tomato" : "white"}
                 size={22}
               />
             </Action>
-            {fullView || (
-              <Action
-                onPress={() =>
-                  navigation.navigate("Comments", { photoId: photo.id })
-                }
-              >
-                <Ionicons name="chatbubble-outline" color="white" size={22} />
-              </Action>
-            )}
+            <Action
+              onPress={() => navigation.navigate("Comments", { photoId: id })}
+            >
+              <Ionicons name="chatbubble-outline" color="white" size={22} />
+            </Action>
           </Actions>
-          <Date>{moment(Number(photo.createdAt)).fromNow()}</Date>
+          <Date>{moment(Number(createdAt)).fromNow()}</Date>
         </ActionsContainer>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Likes", { photoId: photo.id })}
+          onPress={() => navigation.navigate("Likes", { photoId: id })}
         >
-          <Likes>{photo.likes === 1 ? "1 like" : `${photo.likes} likes`}</Likes>
+          <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
         </TouchableOpacity>
         <Caption>
           <TouchableOpacity onPress={goToProfile}>
-            <Username>{photo.user.username}</Username>
+            <Username>{user?.username}</Username>
           </TouchableOpacity>
-          <CaptionText>{photo.caption}</CaptionText>
+          <CaptionText>{caption}</CaptionText>
         </Caption>
       </Body>
     </Container>

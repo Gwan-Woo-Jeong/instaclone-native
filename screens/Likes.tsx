@@ -52,7 +52,7 @@ function Likes({ route }: LikesProps) {
         keyExtractor={(item) => "" + item?.id}
         renderItem={renderUser}
         style={{ width: "100%" }}
-      ></FlatList>
+      />
     </ScreenLayout>
   );
 }

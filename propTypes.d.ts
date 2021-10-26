@@ -69,5 +69,4 @@ export type CommentProps = {
 
 export type PhotoProps = {
   photo: seeFeedNative_seeFeedNative;
-  fullView?: boolean;
 };

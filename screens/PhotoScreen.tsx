@@ -22,7 +22,6 @@ const SEE_PHOTO = gql`
   ${PHOTO_FRAGMENT}
 `;
 
-// fullView가 있으면 Comment 보여주기
 function PhotoScreen({ route, navigation }: PhotoScreenProps) {
   const [refreshing, setRefreshing] = useState(false);
   const { data, loading, refetch } = useQuery(SEE_PHOTO, {
@@ -50,7 +49,7 @@ function PhotoScreen({ route, navigation }: PhotoScreenProps) {
           justifyContent: "center",
         }}
       >
-        <Photo photo={data?.seePhoto} fullView={true} />
+        <Photo {...data?.seePhoto!} />
       </ScrollView>
     </ScreenLayout>
   );

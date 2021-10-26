@@ -6,6 +6,7 @@ import AvoidKeyboard from "../components/AvoidKeyboard";
 import Comment from "../components/Comment";
 import DismissKeyboard from "../components/DismissKeyboard";
 import ScreenLayout from "../components/ScreenLayout";
+import { Separator } from "../components/Separator";
 import TextInputForm from "../components/TextInputForm";
 import useMe from "../hooks/useMe";
 import { CommentsProps } from "../propTypes";
@@ -150,11 +151,13 @@ function Comments({ route }: CommentsProps) {
       <AvoidKeyboard>
         <ScreenLayout loading={loading}>
           <FlatList
+            ItemSeparatorComponent={() => <Separator />}
             data={data?.seePhotoComments}
             keyExtractor={(comment) => "" + comment?.id}
             renderItem={renderComment}
             showsVerticalScrollIndicator={false}
             horizontal={false}
+            style={{ width: "100%" }}
           />
           <TextInputForm
             placeholder="Write a comment..."
