@@ -10,7 +10,11 @@
 export interface me_me {
   __typename: "User";
   id: number;
+  firstName: string;
+  lastName: string | null;
   username: string;
+  email: string;
+  bio: string | null;
   avatar: string | null;
 }
 

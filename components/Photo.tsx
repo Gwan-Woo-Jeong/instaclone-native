@@ -13,6 +13,7 @@ import {
 } from "../screens/__generated__/toggleLike";
 import moment from "moment";
 import { seeFeedNative_seeFeedNative } from "../screens/__generated__/seeFeedNative";
+import Avatar from "./Avatar";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -127,7 +128,7 @@ function Photo({
   return (
     <Container>
       <Header onPress={goToProfile}>
-        <UserAvatar source={{ uri: user?.avatar! }} resizeMode="cover" />
+        <Avatar uri={user?.avatar!} size={30} style={{ marginRight: 10 }} />
         <Username>{user?.username}</Username>
       </Header>
       <File

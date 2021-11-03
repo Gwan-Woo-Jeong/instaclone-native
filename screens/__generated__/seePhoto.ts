@@ -23,6 +23,7 @@ export interface seePhoto_seePhoto {
   isLiked: boolean;
   user: seePhoto_seePhoto_user;
   caption: string | null;
+  createdAt: string;
 }
 
 export interface seePhoto {

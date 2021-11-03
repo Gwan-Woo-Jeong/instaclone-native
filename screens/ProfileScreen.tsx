@@ -180,9 +180,6 @@ function ProfileScreen({ seeProfile }: seeProfile) {
     if (!ok) {
       return;
     }
-
-    console.log(cache);
-
     cache.modify({
       id: `User:${seeProfile?.username}`,
       fields: {
