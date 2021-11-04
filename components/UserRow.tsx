@@ -4,17 +4,11 @@ import styled from "styled-components/native";
 import { colors } from "../colors";
 import { RootStackParamList } from "../propTypes";
 import { seePhotoLikes_seePhotoLikes } from "../screens/__generated__/seePhotoLikes";
+import Avatar from "./Avatar";
 
 const Column = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-`;
-
-const Avatar = styled.Image`
-  width: 40px;
-  height: 40px;
-  border-radius: 25px;
-  margin-right: 10px;
 `;
 
 const Username = styled.Text`
@@ -40,8 +34,6 @@ const FollowBtnText = styled.Text`
   font-weight: 600;
 `;
 
-// 팔로우 언팔로우 버튼
-
 function UserRow({
   avatar,
   username,
@@ -60,7 +52,7 @@ function UserRow({
           });
         }}
       >
-        <Avatar source={{ uri: avatar! }} />
+        <Avatar uri={avatar!} size={40} style={{ marginRight: 10 }} />
         <Username>{username}</Username>
       </Column>
       {!isMe && (

@@ -5,6 +5,7 @@ import { TextInput } from "react-native";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
 import { InputText } from "../components/auth/AuthShared";
+import Avatar from "../components/Avatar";
 import useMe from "../hooks/useMe";
 
 interface EditProfileForm {
@@ -74,6 +75,7 @@ function EditProfile() {
 
   return (
     <AuthLayout>
+      <Avatar uri={data?.me?.avatar!} size={120} />
       <InputText
         autoFocus
         ref={bioRef}

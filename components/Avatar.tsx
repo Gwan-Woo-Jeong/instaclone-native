@@ -16,7 +16,7 @@ type AvatarProps = {
 };
 
 function Avatar({ uri, size, style }: AvatarProps) {
-  return <Image source={{ uri: uri || avatar }} size={size} style={style} />;
+  return <Image source={uri ? { uri } : avatar} size={size} style={style} />;
 }
 
 export default Avatar;

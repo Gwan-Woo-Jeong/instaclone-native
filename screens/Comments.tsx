@@ -17,28 +17,6 @@ import {
   seePhotoComments_seePhotoComments,
 } from "./__generated__/seePhotoComments";
 
-/* 
-comments 보여주기
-1. photo에서 navigate 할 때 photoId 가져오기 -> seePhotoComments
-2. FlatList로 만들기
-3. comment 띄우기
-4. css 입히기
-
-comments 만들기
-1. textinput 만들기
-2. react-hook-form 연결
-3. form 완성 시, createComment mutation 실행
-----------------------------------
-(cache update)
-1. createComment mutation에 update fn 연결
-2. cache.modify로 comment 추가
-
-comment 지우기
-1. comment에 삭제 버튼 만들기
-2. 삭제 버튼 클릭 시, deleteComment Mutation 실행
-3. cache evict로 comment 삭제
-*/
-
 const SEE_PHOTO_COMMENTS_QUERY = gql`
   query seePhotoComments($id: Int!) {
     seePhotoComments(id: $id) {

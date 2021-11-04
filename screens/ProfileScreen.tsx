@@ -21,6 +21,7 @@ import {
   unfollowUserVariables,
 } from "./__generated__/unfollowUser";
 import { followUser, followUserVariables } from "./__generated__/followUser";
+import Avatar from "../components/Avatar";
 
 const FOLLOW_USER_MUTATION = gql`
   mutation followUser($username: String!) {
@@ -71,12 +72,6 @@ const UsernameContainer = styled.View`
   margin-bottom: 15px;
 `;
 
-const Avatar = styled.Image`
-  height: 120px;
-  width: 120px;
-  border-radius: 500px;
-  margin-right: 35px;
-`;
 const UsernameText = styled.Text`
   color: white;
   font-size: 20px;
@@ -248,7 +243,11 @@ function ProfileScreen({ seeProfile }: seeProfile) {
   return (
     <Container>
       <Header>
-        <Avatar source={{ uri: seeProfile?.avatar! }} />
+        <Avatar
+          uri={seeProfile?.avatar!}
+          size={120}
+          style={{ marginRight: 35 }}
+        />
         <ProfileWrapper>
           <ProfileContainer>
             <UsernameContainer>

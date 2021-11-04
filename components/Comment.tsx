@@ -5,6 +5,7 @@ import { gql, MutationUpdaterFn, useMutation } from "@apollo/client";
 import { deleteComment } from "../screens/__generated__/deleteComment";
 import { CommentProps } from "../propTypes";
 import moment from "moment";
+import Avatar from "./Avatar";
 
 const DELETE_COMMENT_MUTATION = gql`
   mutation deleteComment($id: Int!) {
@@ -20,11 +21,6 @@ const CommentContainer = styled.View`
 `;
 const TextContainer = styled.View`
   flex-direction: row;
-`;
-const Avatar = styled.Image`
-  height: 35px;
-  width: 35px;
-  border-radius: 50px;
 `;
 const UsernameText = styled.Text`
   color: white;
@@ -77,7 +73,7 @@ function Comment({ photoId, comment }: CommentProps) {
 
   return (
     <CommentContainer>
-      <Avatar source={{ uri: comment.user.avatar! }} />
+      <Avatar uri={comment.user.avatar!} size={35} />
       <TextContainer>
         <UsernameText>{comment.user.username}</UsernameText>
         <CommentText>{comment.payload}</CommentText>

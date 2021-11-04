@@ -24,6 +24,7 @@ import { UpdateQueryFn } from "@apollo/client/core/watchQueryOptions";
 import TextInputForm from "../components/TextInputForm";
 import DismissKeyboard from "../components/DismissKeyboard";
 import AvoidKeyboard from "../components/AvoidKeyboard";
+import Avatar from "../components/Avatar";
 
 // subscription
 const ROOM_UPDATES = gql`
@@ -65,11 +66,6 @@ const MessageContainer = styled.View`
 
 const Author = styled.View``;
 
-const Avatar = styled.Image`
-  height: 20px;
-  width: 20px;
-  border-radius: 25px;
-`;
 const Message = styled.Text`
   color: white;
   background-color: rgba(255, 255, 255, 0.3);
@@ -206,7 +202,7 @@ function Room({ route, navigation }: RoomProps) {
       outGoing={message?.user.username !== route.params?.talkingTo?.username}
     >
       <Author>
-        <Avatar source={{ uri: message?.user.avatar! }} />
+        <Avatar uri={message?.user.avatar!} size={20} />
       </Author>
       <Message>{message?.payload}</Message>
     </MessageContainer>

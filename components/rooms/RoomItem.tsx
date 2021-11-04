@@ -5,6 +5,7 @@ import { colors } from "../../colors";
 import useMe from "../../hooks/useMe";
 import { RootStackParamList } from "../../propTypes";
 import { seeRooms_seeRooms } from "../../screens/__generated__/seeRooms";
+import Avatar from "../Avatar";
 
 const RoomContainer = styled.TouchableOpacity`
   padding: 15px 10px;
@@ -18,13 +19,6 @@ const Column = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
-
-const Avatar = styled.Image`
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  margin-right: 20px;
 `;
 
 const Data = styled.View``;
@@ -60,7 +54,11 @@ function RoomItem({ users, unreadTotal, id }: seeRooms_seeRooms) {
   return (
     <RoomContainer onPress={goToRoom}>
       <Column>
-        <Avatar source={{ uri: talkingTo?.avatar! }} />
+        <Avatar
+          uri={talkingTo?.avatar!}
+          size={50}
+          style={{ marginRight: 20 }}
+        />
         <Data>
           <Username>{talkingTo?.username}</Username>
           <UnreadText>
