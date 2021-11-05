@@ -1,10 +1,11 @@
 import { NavigationProp, useNavigation } from "@react-navigation/core";
 import { gql, MutationUpdaterFn, useMutation } from "@apollo/client";
-import React from "react";
+import React, { Ref, useRef, useState } from "react";
 import {
   FlatList,
   Image,
   ListRenderItem,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
@@ -22,6 +23,7 @@ import {
 } from "./__generated__/unfollowUser";
 import { followUser, followUserVariables } from "./__generated__/followUser";
 import Avatar from "../components/Avatar";
+import Dialog from "react-native-dialog";
 
 const FOLLOW_USER_MUTATION = gql`
   mutation followUser($username: String!) {
@@ -38,6 +40,8 @@ const UNFOLLOW_USER_MUTATION = gql`
     }
   }
 `;
+
+
 
 const Container = styled.View`
   background-color: black;
@@ -141,7 +145,9 @@ function ProfileScreen({ seeProfile }: seeProfile) {
   );
   const getFollowBtn = ({ isFollowing, isMe }: seeProfile_seeProfile) => {
     if (isMe) {
-      return <EditProfileText>Edit Profile</EditProfileText>;
+      return (
+        <EditProfileText onPress={showDialog}>Edit Profile</EditProfileText>
+      );
     } else {
       if (isFollowing) {
         return (
@@ -240,8 +246,37 @@ function ProfileScreen({ seeProfile }: seeProfile) {
     }
   );
 
+  const [visible, setVisible] = useState(false);
+  const passwordRef = useRef<TextInput>(null);
+  const [passwordInput, setPasswordInput] = useState("");
+
+  const showDialog = () => {
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const handleSubmit = () => {
+    // The user has pressed the "Delete" button, so here you can do your own logic.
+    // ...Your logic
+    console.log(passwordInput);
+  };
+
   return (
     <Container>
+      <Dialog.Container visible={visible}>
+        <Dialog.Title>Edit Profile</Dialog.Title>
+        <Dialog.Description>Please enter your password</Dialog.Description>
+        <Dialog.Input
+          textInputRef={passwordRef}
+          onChangeText={(text) => setPasswordInput(text)}
+          secureTextEntry
+        />
+        <Dialog.Button label="Cancel" onPress={handleCancel} />
+        <Dialog.Button label="Submit" onPress={handleSubmit} />
+      </Dialog.Container>
       <Header>
         <Avatar
           uri={seeProfile?.avatar!}
