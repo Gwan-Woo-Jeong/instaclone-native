@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/core";
 import { gql, MutationUpdaterFn, useMutation } from "@apollo/client";
-import React, { Ref, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   Image,
@@ -21,6 +21,11 @@ import {
   unfollowUser,
   unfollowUserVariables,
 } from "./__generated__/unfollowUser";
+import {
+  checkPassword,
+  checkPasswordVariables,
+  checkPassword_checkPassword,
+} from "./__generated__/checkPassword";
 import { followUser, followUserVariables } from "./__generated__/followUser";
 import Avatar from "../components/Avatar";
 import Dialog from "react-native-dialog";
@@ -41,7 +46,14 @@ const UNFOLLOW_USER_MUTATION = gql`
   }
 `;
 
-
+const CHECK_PASSWORD_MUTATION = gql`
+  mutation checkPassword($username: String!, $password: String!) {
+    checkPassword(username: $username, password: $password) {
+      ok
+      error
+    }
+  }
+`;
 
 const Container = styled.View`
   background-color: black;
@@ -250,6 +262,16 @@ function ProfileScreen({ seeProfile }: seeProfile) {
   const passwordRef = useRef<TextInput>(null);
   const [passwordInput, setPasswordInput] = useState("");
 
+  const [checkPassword] = useMutation<checkPassword, checkPasswordVariables>(
+    CHECK_PASSWORD_MUTATION,
+    {
+      variables: {
+        username: seeProfile?.username!,
+        password: passwordInput,
+      },
+    }
+  );
+
   const showDialog = () => {
     setVisible(true);
   };
@@ -258,10 +280,15 @@ function ProfileScreen({ seeProfile }: seeProfile) {
     setVisible(false);
   };
 
-  const handleSubmit = () => {
-    // The user has pressed the "Delete" button, so here you can do your own logic.
-    // ...Your logic
-    console.log(passwordInput);
+  const handleSubmit = async () => {
+    const { data } = await checkPassword();
+    if (data?.checkPassword.ok) {
+      setVisible(false);
+      navigation.navigate("EditProfile", { username: seeProfile?.username! });
+    } else {
+      alert(data?.checkPassword.error);
+      passwordRef.current?.clear();
+    }
   };
 
   return (

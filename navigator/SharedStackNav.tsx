@@ -3,6 +3,7 @@ import React from "react";
 import { Image } from "react-native";
 import { SharedStackNavProps } from "../propTypes";
 import Comments from "../screens/Comments";
+import EditProfile from "../screens/EditProfile";
 import Feed from "../screens/Feed";
 import Likes from "../screens/Likes";
 import Me from "../screens/Me";
@@ -60,6 +61,7 @@ function SharedStackNav({ screenName }: SharedStackNavProps) {
       <Stack.Screen name="Photo" component={PhotoScreen} />
       <Stack.Screen name="Likes" component={Likes} />
       <Stack.Screen name="Comments" component={Comments} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
     </Stack.Navigator>
   );
 }

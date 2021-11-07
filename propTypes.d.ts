@@ -25,6 +25,7 @@ type RootStackParamList = {
   Room:
     | undefined
     | { id: number; talkingTo: seeRooms_seeRooms_users | null | undefined };
+  EditProfile: undefined | { username: string };
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;
@@ -51,6 +52,10 @@ export type UploadFormProps = StackScreenProps<
 >;
 export type RoomProps = StackScreenProps<RootStackParamList, "Room">;
 export type CommentsProps = StackScreenProps<RootStackParamList, "Comments">;
+export type EditProfileProps = StackScreenProps<
+  RootStackParamList,
+  "EditProfile"
+>;
 
 export type SharedStackNavProps = {
   screenName: string;
