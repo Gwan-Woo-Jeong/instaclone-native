@@ -3,12 +3,17 @@ import { ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
 import { colors } from "../../colors";
 
-const Button = styled.TouchableOpacity`
+interface ButtonProps {
+  editMode?: boolean;
+}
+
+const Button = styled.TouchableOpacity<ButtonProps>`
   background-color: ${colors.blue};
-  padding: 15px 10px;
-  border-radius: 3px;
+  padding: ${(props) => (props.editMode ? "12px 7px" : "15px 10px")};
+  border-radius: ${(props) => (props.editMode ? "5px" : "3px")};
   width: 100%;
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};
+  ${(props) => props.editMode && "margin-top: 10px"};
 `;
 
 const ButtonText = styled.Text`
@@ -22,11 +27,12 @@ interface Props {
   onPress: () => void;
   text: string;
   loading?: boolean;
+  editMode?: boolean;
 }
 
-function AuthButton({ disabled, onPress, text, loading }: Props) {
+function AuthButton({ disabled, onPress, text, loading, editMode }: Props) {
   return (
-    <Button disabled={disabled} onPress={onPress}>
+    <Button disabled={disabled} onPress={onPress} editMode>
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (

@@ -16,7 +16,7 @@ type RootStackParamList = {
   Likes: undefined | { photoId: number };
   Comments: undefined | { photoId: number };
   Me: undefined;
-  SelectPhoto: undefined;
+  SelectPhoto: undefined | { editMode?: boolean; password?: string };
   TakePhoto: undefined;
   Tabs: undefined;
   UploadForm: undefined | { file: string };
@@ -25,7 +25,7 @@ type RootStackParamList = {
   Room:
     | undefined
     | { id: number; talkingTo: seeRooms_seeRooms_users | null | undefined };
-  EditProfile: undefined | { username: string };
+  EditProfile: undefined | { password?: string; file: string };
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;

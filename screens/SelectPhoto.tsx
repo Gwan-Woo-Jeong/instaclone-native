@@ -35,7 +35,7 @@ const IconContainer = styled.View`
   right: 0;
 `;
 
-function SelectPhoto({ navigation }: SelectPhotoProps) {
+function SelectPhoto({ navigation, route }: SelectPhotoProps) {
   const [photos, setPhotos] = useState<Array<MediaLibrary.Asset>>([]);
   const [chosenPhoto, setChosenPhoto] = useState<string>("");
   useEffect(() => {
@@ -49,11 +49,25 @@ function SelectPhoto({ navigation }: SelectPhotoProps) {
   // 사진을 선택할 때 마다, next 버튼 리렌더
   useEffect(() => {
     navigation.setOptions({
-      headerRight: headerRight(() =>
-        navigation.navigate("UploadForm", { file: chosenPhoto })
-      ),
+      headerRight: headerRight(() => {
+        if (route.params?.editMode) {
+          navigation.navigate("EditProfile", {
+            file: chosenPhoto,
+            password: route.params?.password,
+          });
+        } else {
+          navigation.navigate("UploadForm", { file: chosenPhoto });
+        }
+      }),
     });
   }, [chosenPhoto]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: "Select Photo",
+      headerTitleAlign: "center",
+    });
+  }, []);
 
   const numColumns = 4;
   const { width } = useWindowDimensions();

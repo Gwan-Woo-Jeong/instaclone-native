@@ -284,7 +284,9 @@ function ProfileScreen({ seeProfile }: seeProfile) {
     const { data } = await checkPassword();
     if (data?.checkPassword.ok) {
       setVisible(false);
-      navigation.navigate("EditProfile", { username: seeProfile?.username! });
+      navigation.navigate("EditProfile", {
+        password: passwordInput,
+      });
     } else {
       alert(data?.checkPassword.error);
       passwordRef.current?.clear();

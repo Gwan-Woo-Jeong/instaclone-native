@@ -3,11 +3,15 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 import styled from "styled-components/native";
 import DismissKeyboard from "../DismissKeyboard";
 
-const Container = styled.View`
+interface ContainerProps {
+  editMode?: boolean;
+}
+
+const Container = styled.View<ContainerProps>`
   background-color: black;
   flex: 1;
-  align-items: center;
-  justify-content: center;
+  ${(props) =>
+    !props.editMode && "align-items: center; justify-content: center;"}
   padding: 0px 40px;
 `;
 
@@ -21,12 +25,13 @@ const Logo = styled.Image`
 
 type Props = {
   children: React.ReactNode;
+  editMode?: boolean;
 };
 
-function AuthLayout({ children }: Props) {
+function AuthLayout({ children, editMode }: Props) {
   return (
     <DismissKeyboard>
-      <Container>
+      <Container editMode={editMode}>
         <KeyboardAvoidingView
           style={{
             width: "100%",
@@ -34,10 +39,12 @@ function AuthLayout({ children }: Props) {
           behavior="padding"
           keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
         >
-          <Logo
-            resizeMode="contain"
-            source={require("../../assets/logo.png")}
-          />
+          {editMode || (
+            <Logo
+              resizeMode="contain"
+              source={require("../../assets/logo.png")}
+            />
+          )}
           {children}
         </KeyboardAvoidingView>
       </Container>
