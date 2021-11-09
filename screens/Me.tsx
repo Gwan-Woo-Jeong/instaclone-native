@@ -9,7 +9,7 @@ import { SEE_PROFILE_QUERY } from "./Profile";
 
 function Me({ navigation }: MeProps) {
   const { data: meData } = useMe();
-  const { data, loading } = useQuery<seeProfile>(SEE_PROFILE_QUERY, {
+  const { data, loading, refetch } = useQuery<seeProfile>(SEE_PROFILE_QUERY, {
     variables: { username: meData?.me?.username },
   });
 
@@ -19,6 +19,13 @@ function Me({ navigation }: MeProps) {
       headerTitleAlign: "center",
     });
   }, []);
+
+  useEffect(() => {
+    const onFocus = navigation.addListener("focus", () => {
+      refetch();
+    });
+    return onFocus;
+  }, [navigation]);
 
   return (
     <ScreenLayout loading={loading}>

@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
-import React, { useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { TextInput } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { KeyboardAvoidingView, TextInput } from "react-native";
 import styled from "styled-components/native";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
@@ -10,6 +10,8 @@ import Avatar from "../components/Avatar";
 import useMe from "../hooks/useMe";
 import { EditProfileProps } from "../propTypes";
 import { Ionicons } from "@expo/vector-icons";
+import { editProfile } from "./__generated__/editProfile";
+import { ReactNativeFile } from "extract-files";
 
 interface EditProfileForm {
   bio: string;
@@ -46,17 +48,9 @@ const EDIT_PROFILE_MUTATION = gql`
   }
 `;
 
-const Container = styled.View`
-  background-color: black;
-  flex: 1;
-`;
-
 const AvatarContainer = styled.View`
   align-items: center;
   margin: 15px 0 12px 0;
-`;
-
-const TouchableContainer = styled.TouchableOpacity`
   position: relative;
 `;
 
@@ -73,31 +67,41 @@ const InputTitle = styled.Text`
   font-size: 12px;
 `;
 
-const IconContainer = styled.View`
-  background-color: #e0e0e0;
-  height: 50px;
-  width: 50px;
-  border-radius: 1000px;
+const IconContainer = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   position: absolute;
+  border-radius: 1000px;
+`;
+
+const CameraIcon = styled(IconContainer)`
+  background-color: #dfdfdf;
+  height: 50px;
+  width: 50px;
   bottom: 0;
-  right: 5px;
+  right: 70px;
+`;
+
+const TrashIcon = styled(IconContainer)`
+  background-color: #6e6e6e;
+  height: 25px;
+  width: 25px;
+  left: 75px;
+  top: 18px;
 `;
 
 function EditProfile({ route, navigation }: EditProfileProps) {
   const { data } = useMe();
-  const { register, handleSubmit, setValue, getValues, watch } =
-    useForm<EditProfileForm>({
-      defaultValues: {
-        firstName: data?.me?.firstName,
-        lastName: data?.me?.lastName || "",
-        username: data?.me?.username,
-        email: data?.me?.email,
-        password: route.params?.password,
-        bio: data?.me?.bio || "",
-      },
-    });
+  const { register, handleSubmit, setValue, watch } = useForm<EditProfileForm>({
+    defaultValues: {
+      firstName: data?.me?.firstName,
+      lastName: data?.me?.lastName || "",
+      username: data?.me?.username,
+      email: data?.me?.email,
+      password: route.params?.password,
+      bio: data?.me?.bio || "",
+    },
+  });
 
   useEffect(() => {
     navigation.setOptions({
@@ -113,10 +117,6 @@ function EditProfile({ route, navigation }: EditProfileProps) {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
-  const onValid = () => {
-    console.log("Edit!");
-  };
-
   useEffect(() => {
     register("bio", { required: true });
     register("firstName", { required: true });
@@ -126,28 +126,82 @@ function EditProfile({ route, navigation }: EditProfileProps) {
     register("password", { required: true });
   }, [register]);
 
-  const selectedPhoto = route.params?.file || data?.me?.avatar;
+  const selectedPhoto = route.params?.file;
 
-  const [editProfileMutation, { loading }] = useMutation(EDIT_PROFILE_MUTATION);
+  useEffect(() => {
+    if (selectedPhoto) {
+      setavatarPhoto(selectedPhoto);
+      setUploadPhoto(selectedPhoto);
+    } else {
+      setavatarPhoto(data?.me?.avatar!);
+      setUploadPhoto("existing");
+    }
+  }, [selectedPhoto]);
+
+  const [avatarPhoto, setavatarPhoto] = useState<string | null>(null);
+  const [uploadPhoto, setUploadPhoto] = useState<string>("existing");
+
+  const resetAvatar = () => {
+    setavatarPhoto(null);
+    setUploadPhoto("default");
+  };
+
+  const onCompleted = (data: editProfile) => {
+    if (data.editProfile.error) {
+      alert(data.editProfile.error);
+    } else {
+      navigation.navigate("Me");
+      alert("Profile edited successfully");
+    }
+  };
+
+  const [editProfileMutation, { loading }] = useMutation(
+    EDIT_PROFILE_MUTATION,
+    { onCompleted }
+  );
+
+  const onValid: SubmitHandler<editProfile> = (data) => {
+    if (!loading) {
+      let file;
+      if (uploadPhoto === "existing" || uploadPhoto === "default") {
+        file = uploadPhoto;
+      } else {
+        file = new ReactNativeFile({
+          uri: uploadPhoto,
+          name: `1.jpg`,
+          type: "image/jpeg",
+        });
+      }
+      editProfileMutation({
+        variables: {
+          ...data,
+          avatar: file,
+        },
+      });
+    }
+  };
 
   return (
-    <Container>
-      <AvatarContainer>
-        <TouchableContainer
-          onPress={() =>
-            navigation.navigate("SelectPhoto", {
-              editMode: true,
-              password: route.params?.password,
-            })
-          }
-        >
-          <Avatar uri={selectedPhoto!} size={180} />
-          <IconContainer>
-            <Ionicons name="camera-sharp" size={30} color="black" />
-          </IconContainer>
-        </TouchableContainer>
-      </AvatarContainer>
-      <AuthLayout editMode={true}>
+    <AuthLayout editMode={true}>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={50}>
+        <AvatarContainer>
+          <Avatar uri={avatarPhoto!} size={180} />
+          {avatarPhoto && (
+            <TrashIcon onPress={resetAvatar}>
+              <Ionicons name="trash" size={17} color="#dbdada" />
+            </TrashIcon>
+          )}
+          <CameraIcon
+            onPress={() =>
+              navigation.navigate("SelectPhoto", {
+                editMode: true,
+                password: route.params?.password,
+              })
+            }
+          >
+            <Ionicons name="camera-sharp" size={30} color="#222222" />
+          </CameraIcon>
+        </AvatarContainer>
         <InputTitle>Bio</InputTitle>
         <EditTextInput
           autoFocus
@@ -157,6 +211,7 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           returnKeyType="next"
           onChangeText={(text) => setValue("bio", text)}
           value={watch("bio")}
+          autoCorrect={false}
         />
         <InputTitle>First Name</InputTitle>
         <EditTextInput
@@ -167,6 +222,7 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           returnKeyType="next"
           onChangeText={(text) => setValue("firstName", text)}
           value={watch("firstName")}
+          autoCorrect={false}
         />
         <InputTitle>Last Name</InputTitle>
         <EditTextInput
@@ -176,6 +232,7 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           returnKeyType="next"
           onChangeText={(text) => setValue("lastName", text)}
           value={watch("lastName")}
+          autoCorrect={false}
         />
         <InputTitle>User Name</InputTitle>
         <EditTextInput
@@ -185,9 +242,9 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           returnKeyType="next"
           autoCapitalize="none"
           onChangeText={(text) => setValue("username", text)}
-          editable={false}
           selectTextOnFocus={false}
           value={watch("username")}
+          autoCorrect={false}
         />
         <InputTitle>Email</InputTitle>
         <EditTextInput
@@ -199,6 +256,7 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           autoCapitalize="none"
           onChangeText={(text) => setValue("email", text)}
           value={watch("email")}
+          autoCorrect={false}
         />
         <InputTitle>Password</InputTitle>
         <EditTextInput
@@ -210,14 +268,15 @@ function EditProfile({ route, navigation }: EditProfileProps) {
           lastOne={true}
           onChangeText={(text) => setValue("password", text)}
           value={watch("password")}
+          autoCorrect={false}
         />
         <AuthButton
-          text="Edit Profile"
           disabled={false}
+          text="Edit Profile"
           onPress={handleSubmit(onValid)}
         />
-      </AuthLayout>
-    </Container>
+      </KeyboardAvoidingView>
+    </AuthLayout>
   );
 }
 

@@ -25,7 +25,7 @@ type RootStackParamList = {
   Room:
     | undefined
     | { id: number; talkingTo: seeRooms_seeRooms_users | null | undefined };
-  EditProfile: undefined | { password?: string; file: string };
+  EditProfile: undefined | { password?: string; file?: string };
 };
 
 export type WelcomeProps = StackScreenProps<RootStackParamList, "Welcome">;

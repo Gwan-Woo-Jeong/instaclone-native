@@ -24,7 +24,6 @@ import {
 import {
   checkPassword,
   checkPasswordVariables,
-  checkPassword_checkPassword,
 } from "./__generated__/checkPassword";
 import { followUser, followUserVariables } from "./__generated__/followUser";
 import Avatar from "../components/Avatar";

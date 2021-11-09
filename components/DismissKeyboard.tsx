@@ -1,6 +1,6 @@
 import React from "react";
 import { Keyboard, Platform } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native";
 
 function DismissKeyboard({ children }: { children: React.ReactNode }) {
   const dissmissKeyboard = () => {
